@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.perfectfit.models.Customer
 import com.example.perfectfit.models.Measurement
 
-@Database(entities = [Customer::class, Measurement::class], version = 2, exportSchema = false)
+@Database(entities = [Customer::class, Measurement::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     
     abstract fun customerDao(): CustomerDao

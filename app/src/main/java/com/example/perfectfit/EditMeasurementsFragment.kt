@@ -121,11 +121,26 @@ class EditMeasurementsFragment : Fragment() {
             EditableMeasurementField("Bottom", m?.pantBottom ?: "", "pantBottom")
         ))
         
-        // Blouse Fields
+        // Blouse Fields (16 fields - separate from Kurti)
         blouseFields.clear()
-        blouseFields.add(
-            EditableMeasurementField("Blouse Length", m?.blouseLength ?: "", "blouseLength")
-        )
+        blouseFields.addAll(listOf(
+            EditableMeasurementField("Blouse Length", m?.blouseLength ?: "", "blouseLength"),
+            EditableMeasurementField("Full Shoulder", m?.blouseFullShoulder ?: "", "blouseFullShoulder"),
+            EditableMeasurementField("Chest", m?.blouseChest ?: "", "blouseChest"),
+            EditableMeasurementField("Waist", m?.blouseWaist ?: "", "blouseWaist"),
+            EditableMeasurementField("Shoulder to Apex", m?.blouseShoulderToApex ?: "", "blouseShoulderToApex"),
+            EditableMeasurementField("Apex to Apex", m?.blouseApexToApex ?: "", "blouseApexToApex"),
+            EditableMeasurementField("Back Length", m?.blouseBackLength ?: "", "blouseBackLength"),
+            EditableMeasurementField("Front Neck Deep", m?.blouseFrontNeckDeep ?: "", "blouseFrontNeckDeep"),
+            EditableMeasurementField("Front Neck Width", m?.blouseFrontNeckWidth ?: "", "blouseFrontNeckWidth"),
+            EditableMeasurementField("Back Neck Deep", m?.blouseBackNeckDeep ?: "", "blouseBackNeckDeep"),
+            EditableMeasurementField("Ready Shoulder", m?.blouseReadyShoulder ?: "", "blouseReadyShoulder"),
+            EditableMeasurementField("Sleeves Height (Short)", m?.blouseSleevesHeightShort ?: "", "blouseSleevesHeightShort"),
+            EditableMeasurementField("Sleeves Height (Elbow)", m?.blouseSleevesHeightElbow ?: "", "blouseSleevesHeightElbow"),
+            EditableMeasurementField("Sleeves Height (3/4th)", m?.blouseSleevesHeightThreeQuarter ?: "", "blouseSleevesHeightThreeQuarter"),
+            EditableMeasurementField("Sleeves Round", m?.blouseSleevesRound ?: "", "blouseSleevesRound"),
+            EditableMeasurementField("Hook On (left/right)", m?.blouseHookOn ?: "", "blouseHookOn")
+        ))
     }
 
     private fun setupRecyclerViews() {
@@ -214,8 +229,23 @@ class EditMeasurementsFragment : Fragment() {
                         pantLength = pantFields.find { it.fieldId == "pantLength" }?.value ?: "",
                         pantHip = pantFields.find { it.fieldId == "pantHip" }?.value ?: "",
                         pantBottom = pantFields.find { it.fieldId == "pantBottom" }?.value ?: "",
-                        // Blouse measurement
+                        // Blouse measurements (16 fields - separate from Kurti)
                         blouseLength = blouseFields.find { it.fieldId == "blouseLength" }?.value ?: "",
+                        blouseFullShoulder = blouseFields.find { it.fieldId == "blouseFullShoulder" }?.value ?: "",
+                        blouseChest = blouseFields.find { it.fieldId == "blouseChest" }?.value ?: "",
+                        blouseWaist = blouseFields.find { it.fieldId == "blouseWaist" }?.value ?: "",
+                        blouseShoulderToApex = blouseFields.find { it.fieldId == "blouseShoulderToApex" }?.value ?: "",
+                        blouseApexToApex = blouseFields.find { it.fieldId == "blouseApexToApex" }?.value ?: "",
+                        blouseBackLength = blouseFields.find { it.fieldId == "blouseBackLength" }?.value ?: "",
+                        blouseFrontNeckDeep = blouseFields.find { it.fieldId == "blouseFrontNeckDeep" }?.value ?: "",
+                        blouseFrontNeckWidth = blouseFields.find { it.fieldId == "blouseFrontNeckWidth" }?.value ?: "",
+                        blouseBackNeckDeep = blouseFields.find { it.fieldId == "blouseBackNeckDeep" }?.value ?: "",
+                        blouseReadyShoulder = blouseFields.find { it.fieldId == "blouseReadyShoulder" }?.value ?: "",
+                        blouseSleevesHeightShort = blouseFields.find { it.fieldId == "blouseSleevesHeightShort" }?.value ?: "",
+                        blouseSleevesHeightElbow = blouseFields.find { it.fieldId == "blouseSleevesHeightElbow" }?.value ?: "",
+                        blouseSleevesHeightThreeQuarter = blouseFields.find { it.fieldId == "blouseSleevesHeightThreeQuarter" }?.value ?: "",
+                        blouseSleevesRound = blouseFields.find { it.fieldId == "blouseSleevesRound" }?.value ?: "",
+                        blouseHookOn = blouseFields.find { it.fieldId == "blouseHookOn" }?.value ?: "",
                         lastUpdated = System.currentTimeMillis()
                     )
                     

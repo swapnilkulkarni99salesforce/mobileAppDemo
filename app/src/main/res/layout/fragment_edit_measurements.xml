@@ -112,7 +112,7 @@
                 android:nestedScrollingEnabled="false"
                 android:clipToPadding="false"
                 android:paddingBottom="8dp"
-                android:minHeight="100dp"
+                android:minHeight="1300dp"
                 android:overScrollMode="never"/>
 
         </LinearLayout>

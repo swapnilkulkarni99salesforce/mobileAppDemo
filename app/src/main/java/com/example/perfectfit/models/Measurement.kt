@@ -49,8 +49,23 @@ data class Measurement(
     val pantHip: String = "",
     val pantBottom: String = "",
     
-    // Blouse Measurements
+    // Blouse Measurements (separate from Kurti)
     val blouseLength: String = "",
+    val blouseFullShoulder: String = "",
+    val blouseChest: String = "",
+    val blouseWaist: String = "",
+    val blouseShoulderToApex: String = "",
+    val blouseApexToApex: String = "",
+    val blouseBackLength: String = "",
+    val blouseFrontNeckDeep: String = "",
+    val blouseFrontNeckWidth: String = "",
+    val blouseBackNeckDeep: String = "",
+    val blouseReadyShoulder: String = "",
+    val blouseSleevesHeightShort: String = "",
+    val blouseSleevesHeightElbow: String = "",
+    val blouseSleevesHeightThreeQuarter: String = "",
+    val blouseSleevesRound: String = "",
+    val blouseHookOn: String = "", // "left" or "right"
     
     // Metadata
     val lastUpdated: Long = System.currentTimeMillis()

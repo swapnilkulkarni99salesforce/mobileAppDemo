@@ -65,14 +65,16 @@ class ClientFitProfileFragment : Fragment() {
     
     private fun setupFabButton() {
         binding.fabEditMeasurements.setOnClickListener {
-            // TODO: Navigate to Edit Measurements screen
-            // For now, show a toast message
-            android.widget.Toast.makeText(
-                requireContext(),
-                "Edit measurements feature - Coming soon! \nMeasurement entry form is ready.",
-                android.widget.Toast.LENGTH_LONG
-            ).show()
+            customer?.let { navigateToEditMeasurements(it) }
         }
+    }
+    
+    private fun navigateToEditMeasurements(customer: Customer) {
+        val editFragment = EditMeasurementsFragment.newInstance(customer)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, editFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun setupViewPager() {

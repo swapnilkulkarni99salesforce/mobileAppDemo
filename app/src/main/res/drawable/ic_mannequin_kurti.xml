@@ -76,42 +76,37 @@
             android:strokeWidth="2"/>
     </group>
     
-    <!-- Measurement indicator lines (dashed) -->
+    <!-- Measurement indicator lines (solid) -->
     <group>
         <!-- Shoulder line -->
         <path
             android:pathData="M45,85 L155,85"
             android:strokeColor="@color/sage_green"
-            android:strokeWidth="1"
-            android:strokeDasharray="5,3"/>
+            android:strokeWidth="1"/>
         
         <!-- Chest line -->
         <path
             android:pathData="M50,130 L150,130"
             android:strokeColor="@color/sage_green"
-            android:strokeWidth="1"
-            android:strokeDasharray="5,3"/>
+            android:strokeWidth="1"/>
         
         <!-- Waist line -->
         <path
             android:pathData="M70,260 L130,260"
             android:strokeColor="@color/sage_green"
-            android:strokeWidth="1"
-            android:strokeDasharray="5,3"/>
+            android:strokeWidth="1"/>
         
         <!-- Hip line -->
         <path
             android:pathData="M65,290 L135,290"
             android:strokeColor="@color/sage_green"
-            android:strokeWidth="1"
-            android:strokeDasharray="5,3"/>
+            android:strokeWidth="1"/>
         
         <!-- Length line -->
         <path
             android:pathData="M165,85 L165,310"
             android:strokeColor="@color/sage_green"
-            android:strokeWidth="1"
-            android:strokeDasharray="5,3"/>
+            android:strokeWidth="1"/>
     </group>
     
     <!-- Measurement numbers -->

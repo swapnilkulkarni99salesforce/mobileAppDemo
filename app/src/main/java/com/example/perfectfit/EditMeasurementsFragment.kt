@@ -138,8 +138,11 @@ class EditMeasurementsFragment : Fragment() {
                     binding.blouseSection.visibility = View.GONE
                     binding.kurtiFieldsRecycler.apply {
                         layoutManager = LinearLayoutManager(requireContext())
+                        setHasFixedSize(false)
+                        isNestedScrollingEnabled = false
                         adapter = EditableMeasurementAdapter(kurtiFields)
                     }
+                    android.util.Log.d("EditFragment", "Kurti fields count: ${kurtiFields.size}")
                 }
                 "PANT" -> {
                     binding.kurtiSection.visibility = View.GONE
@@ -147,8 +150,11 @@ class EditMeasurementsFragment : Fragment() {
                     binding.blouseSection.visibility = View.GONE
                     binding.pantFieldsRecycler.apply {
                         layoutManager = LinearLayoutManager(requireContext())
+                        setHasFixedSize(false)
+                        isNestedScrollingEnabled = false
                         adapter = EditableMeasurementAdapter(pantFields)
                     }
+                    android.util.Log.d("EditFragment", "Pant fields count: ${pantFields.size}")
                 }
                 "BLOUSE" -> {
                     binding.kurtiSection.visibility = View.GONE
@@ -156,8 +162,11 @@ class EditMeasurementsFragment : Fragment() {
                     binding.blouseSection.visibility = View.VISIBLE
                     binding.blouseFieldsRecycler.apply {
                         layoutManager = LinearLayoutManager(requireContext())
+                        setHasFixedSize(false)
+                        isNestedScrollingEnabled = false
                         adapter = EditableMeasurementAdapter(blouseFields)
                     }
+                    android.util.Log.d("EditFragment", "Blouse fields count: ${blouseFields.size}")
                 }
             }
         }

@@ -12,6 +12,8 @@ import com.example.perfectfit.models.MeasurementItem
 
 class PantMeasurementsFragment : Fragment() {
 
+    private lateinit var recyclerView: RecyclerView
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -23,10 +25,26 @@ class PantMeasurementsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        val measurement = (parentFragment as? ClientFitProfileFragment)?.getMeasurement()
-        val recyclerView = view.findViewById<RecyclerView>(R.id.pant_measurements_recycler)
+        recyclerView = view.findViewById(R.id.pant_measurements_recycler)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         
+        observeMeasurements()
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        observeMeasurements()
+    }
+    
+    private fun observeMeasurements() {
+        (parentFragment as? ClientFitProfileFragment)?.let { parent ->
+            parent.getMeasurementLiveData()?.observe(viewLifecycleOwner) { measurement ->
+                updateUI(measurement)
+            }
+        }
+    }
+    
+    private fun updateUI(measurement: com.example.perfectfit.models.Measurement?) {
         val measurements = if (measurement != null) {
             listOf(
                 MeasurementItem("Waist", measurement.pantWaist),

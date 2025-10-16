@@ -25,6 +25,7 @@ class ClientFitProfileFragment : Fragment() {
     private lateinit var database: AppDatabase
     private var customer: Customer? = null
     private var measurement: Measurement? = null
+    private var measurementLiveData: androidx.lifecycle.LiveData<Measurement?>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,11 +93,11 @@ class ClientFitProfileFragment : Fragment() {
     }
 
     private fun loadMeasurements(customerId: Int) {
-        database.measurementDao().getMeasurementByCustomerId(customerId)
-            .observe(viewLifecycleOwner) { measurement ->
-                this.measurement = measurement
-                updateLastUpdatedText(measurement?.lastUpdated)
-            }
+        measurementLiveData = database.measurementDao().getMeasurementByCustomerId(customerId)
+        measurementLiveData?.observe(viewLifecycleOwner) { measurement ->
+            this.measurement = measurement
+            updateLastUpdatedText(measurement?.lastUpdated)
+        }
     }
 
     private fun updateLastUpdatedText(timestamp: Long?) {
@@ -109,6 +110,8 @@ class ClientFitProfileFragment : Fragment() {
     }
 
     fun getMeasurement(): Measurement? = measurement
+    
+    fun getMeasurementLiveData(): androidx.lifecycle.LiveData<Measurement?>? = measurementLiveData
 
     override fun onDestroyView() {
         super.onDestroyView()

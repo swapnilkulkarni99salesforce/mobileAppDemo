@@ -13,6 +13,8 @@ import com.example.perfectfit.models.MeasurementItem
 
 class KurtiMeasurementsFragment : Fragment() {
 
+    private lateinit var recyclerView: RecyclerView
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -24,10 +26,28 @@ class KurtiMeasurementsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        val measurement = (parentFragment as? ClientFitProfileFragment)?.getMeasurement()
-        val recyclerView = view.findViewById<RecyclerView>(R.id.measurements_recycler)
+        recyclerView = view.findViewById(R.id.measurements_recycler)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         
+        observeMeasurements()
+    }
+    
+    override fun onResume() {
+        super.onResume()
+        // Refresh data when returning from edit screen
+        observeMeasurements()
+    }
+    
+    private fun observeMeasurements() {
+        // Get the parent fragment and observe its measurement LiveData
+        (parentFragment as? ClientFitProfileFragment)?.let { parent ->
+            parent.getMeasurementLiveData()?.observe(viewLifecycleOwner) { measurement ->
+                updateUI(measurement)
+            }
+        }
+    }
+    
+    private fun updateUI(measurement: com.example.perfectfit.models.Measurement?) {
         val measurements = if (measurement != null) {
             listOf(
                 MeasurementItem("Kurti Length", measurement.kurtiLength),

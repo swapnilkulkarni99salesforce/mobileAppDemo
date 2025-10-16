@@ -59,6 +59,19 @@ class ClientFitProfileFragment : Fragment() {
             binding.clientName.text = it.fullName
             setupViewPager()
             loadMeasurements(it.id)
+            setupFabButton()
+        }
+    }
+    
+    private fun setupFabButton() {
+        binding.fabEditMeasurements.setOnClickListener {
+            // TODO: Navigate to Edit Measurements screen
+            // For now, show a toast message
+            android.widget.Toast.makeText(
+                requireContext(),
+                "Edit measurements feature - Coming soon! \nMeasurement entry form is ready.",
+                android.widget.Toast.LENGTH_LONG
+            ).show()
         }
     }
 

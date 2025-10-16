@@ -44,7 +44,9 @@
             android:id="@+id/kurti_fields_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"/>
+            android:nestedScrollingEnabled="false"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp"/>
 
         <!-- Pant Measurements Section -->
         <TextView
@@ -61,7 +63,9 @@
             android:id="@+id/pant_fields_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"/>
+            android:nestedScrollingEnabled="false"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp"/>
 
         <!-- Blouse Measurements Section -->
         <TextView
@@ -78,7 +82,9 @@
             android:id="@+id/blouse_fields_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"/>
+            android:nestedScrollingEnabled="false"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp"/>
 
         <!-- Action Buttons -->
         <com.google.android.material.button.MaterialButton

@@ -13,6 +13,7 @@
         android:padding="16dp">
 
         <TextView
+            android:id="@+id/edit_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Edit Measurements"
@@ -30,61 +31,85 @@
             android:layout_marginBottom="24dp"/>
 
         <!-- Kurti Measurements Section -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="KURTI MEASUREMENTS"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/rose_gold_dark"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="12dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/kurti_fields_recycler"
+        <LinearLayout
+            android:id="@+id/kurti_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:clipToPadding="false"
-            android:paddingBottom="8dp"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="KURTI MEASUREMENTS"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/rose_gold_dark"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="12dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/kurti_fields_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="false"
+                android:paddingBottom="8dp"/>
+
+        </LinearLayout>
 
         <!-- Pant Measurements Section -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PANT MEASUREMENTS"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/rose_gold_dark"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="12dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/pant_fields_recycler"
+        <LinearLayout
+            android:id="@+id/pant_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:clipToPadding="false"
-            android:paddingBottom="8dp"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PANT MEASUREMENTS"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/rose_gold_dark"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/pant_fields_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="false"
+                android:paddingBottom="8dp"/>
+
+        </LinearLayout>
 
         <!-- Blouse Measurements Section -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BLOUSE MEASUREMENTS"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@color/rose_gold_dark"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="12dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/blouse_fields_recycler"
+        <LinearLayout
+            android:id="@+id/blouse_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            android:clipToPadding="false"
-            android:paddingBottom="8dp"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BLOUSE MEASUREMENTS"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/rose_gold_dark"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/blouse_fields_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="false"
+                android:paddingBottom="8dp"/>
+
+        </LinearLayout>
 
         <!-- Action Buttons -->
         <com.google.android.material.button.MaterialButton

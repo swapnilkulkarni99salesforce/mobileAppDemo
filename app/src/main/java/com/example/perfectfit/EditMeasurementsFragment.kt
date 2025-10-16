@@ -23,6 +23,7 @@ class EditMeasurementsFragment : Fragment() {
     private lateinit var database: AppDatabase
     private var customer: Customer? = null
     private var existingMeasurement: Measurement? = null
+    private var selectedTab: String = "KURTI" // KURTI, PANT, or BLOUSE
     
     private val kurtiFields = mutableListOf<EditableMeasurementField>()
     private val pantFields = mutableListOf<EditableMeasurementField>()
@@ -34,6 +35,7 @@ class EditMeasurementsFragment : Fragment() {
         
         arguments?.let {
             val customerId = it.getInt("customerId")
+            selectedTab = it.getString("selectedTab") ?: "KURTI"
             customer = Customer(
                 id = customerId,
                 firstName = it.getString("firstName") ?: "",
@@ -57,6 +59,15 @@ class EditMeasurementsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        // Set dynamic title based on selected tab
+        val title = when (selectedTab) {
+            "KURTI" -> "Edit Kurti Measurements"
+            "PANT" -> "Edit Pant Measurements"
+            "BLOUSE" -> "Edit Blouse Measurements"
+            else -> "Edit Measurements"
+        }
+        binding.editTitle.text = title
         
         customer?.let {
             binding.customerNameText.text = it.fullName
@@ -119,19 +130,35 @@ class EditMeasurementsFragment : Fragment() {
 
     private fun setupRecyclerViews() {
         requireActivity().runOnUiThread {
-            binding.kurtiFieldsRecycler.apply {
-                layoutManager = LinearLayoutManager(requireContext())
-                adapter = EditableMeasurementAdapter(kurtiFields)
-            }
-            
-            binding.pantFieldsRecycler.apply {
-                layoutManager = LinearLayoutManager(requireContext())
-                adapter = EditableMeasurementAdapter(pantFields)
-            }
-            
-            binding.blouseFieldsRecycler.apply {
-                layoutManager = LinearLayoutManager(requireContext())
-                adapter = EditableMeasurementAdapter(blouseFields)
+            // Show/hide sections based on selected tab
+            when (selectedTab) {
+                "KURTI" -> {
+                    binding.kurtiSection.visibility = View.VISIBLE
+                    binding.pantSection.visibility = View.GONE
+                    binding.blouseSection.visibility = View.GONE
+                    binding.kurtiFieldsRecycler.apply {
+                        layoutManager = LinearLayoutManager(requireContext())
+                        adapter = EditableMeasurementAdapter(kurtiFields)
+                    }
+                }
+                "PANT" -> {
+                    binding.kurtiSection.visibility = View.GONE
+                    binding.pantSection.visibility = View.VISIBLE
+                    binding.blouseSection.visibility = View.GONE
+                    binding.pantFieldsRecycler.apply {
+                        layoutManager = LinearLayoutManager(requireContext())
+                        adapter = EditableMeasurementAdapter(pantFields)
+                    }
+                }
+                "BLOUSE" -> {
+                    binding.kurtiSection.visibility = View.GONE
+                    binding.pantSection.visibility = View.GONE
+                    binding.blouseSection.visibility = View.VISIBLE
+                    binding.blouseFieldsRecycler.apply {
+                        layoutManager = LinearLayoutManager(requireContext())
+                        adapter = EditableMeasurementAdapter(blouseFields)
+                    }
+                }
             }
         }
     }
@@ -212,7 +239,7 @@ class EditMeasurementsFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(customer: Customer): EditMeasurementsFragment {
+        fun newInstance(customer: Customer, selectedTab: String = "KURTI"): EditMeasurementsFragment {
             val fragment = EditMeasurementsFragment()
             val bundle = Bundle().apply {
                 putInt("customerId", customer.id)
@@ -222,6 +249,7 @@ class EditMeasurementsFragment : Fragment() {
                 putString("mobile", customer.mobile)
                 putString("alternateMobile", customer.alternateMobile)
                 putString("birthDate", customer.birthDate)
+                putString("selectedTab", selectedTab)
             }
             fragment.arguments = bundle
             return fragment

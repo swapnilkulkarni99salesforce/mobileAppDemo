@@ -26,6 +26,7 @@ class ClientFitProfileFragment : Fragment() {
     private var customer: Customer? = null
     private var measurement: Measurement? = null
     private var measurementLiveData: androidx.lifecycle.LiveData<Measurement?>? = null
+    private var currentTab: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,12 +67,18 @@ class ClientFitProfileFragment : Fragment() {
     
     private fun setupFabButton() {
         binding.fabEditMeasurements.setOnClickListener {
-            customer?.let { navigateToEditMeasurements(it) }
+            customer?.let { navigateToEditMeasurements(it, currentTab) }
         }
     }
     
-    private fun navigateToEditMeasurements(customer: Customer) {
-        val editFragment = EditMeasurementsFragment.newInstance(customer)
+    private fun navigateToEditMeasurements(customer: Customer, tabIndex: Int) {
+        val tabName = when (tabIndex) {
+            0 -> "KURTI"
+            1 -> "PANT"
+            2 -> "BLOUSE"
+            else -> "KURTI"
+        }
+        val editFragment = EditMeasurementsFragment.newInstance(customer, tabName)
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, editFragment)
             .addToBackStack(null)
@@ -90,23 +97,51 @@ class ClientFitProfileFragment : Fragment() {
                 else -> ""
             }
         }.attach()
+        
+        // Track current tab selection
+        binding.tabLayout.addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab?) {
+                currentTab = tab?.position ?: 0
+            }
+            override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
+            override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab?) {}
+        })
     }
 
     private fun loadMeasurements(customerId: Int) {
         measurementLiveData = database.measurementDao().getMeasurementByCustomerId(customerId)
         measurementLiveData?.observe(viewLifecycleOwner) { measurement ->
             this.measurement = measurement
-            updateLastUpdatedText(measurement?.lastUpdated)
+            updateLastMeasurementInfo(measurement?.lastUpdated)
         }
     }
 
-    private fun updateLastUpdatedText(timestamp: Long?) {
-        if (timestamp != null) {
+    private fun updateLastMeasurementInfo(timestamp: Long?) {
+        if (timestamp != null && timestamp != 0L) {
             val sdf = SimpleDateFormat("MMM dd, yyyy 'at' hh:mm a", Locale.getDefault())
             binding.lastUpdatedText.text = "Last Updated: ${sdf.format(Date(timestamp))}"
+            
+            // Calculate and display days ago
+            val daysAgo = getDaysAgo(timestamp)
+            val timeAgoText = when {
+                daysAgo == 0L -> "Measured today"
+                daysAgo == 1L -> "Measured yesterday"
+                daysAgo < 7 -> "Measured $daysAgo days ago"
+                daysAgo < 30 -> "Measured ${daysAgo / 7} week${if (daysAgo / 7 == 1L) "" else "s"} ago"
+                daysAgo < 365 -> "Measured ${daysAgo / 30} month${if (daysAgo / 30 == 1L) "" else "s"} ago"
+                else -> "Measured ${daysAgo / 365} year${if (daysAgo / 365 == 1L) "" else "s"} ago"
+            }
+            binding.lastMeasurementInfo.text = timeAgoText
         } else {
             binding.lastUpdatedText.text = "No measurements recorded"
+            binding.lastMeasurementInfo.text = "Click the edit button to add measurements"
         }
+    }
+    
+    private fun getDaysAgo(timestamp: Long): Long {
+        val now = System.currentTimeMillis()
+        val diff = now - timestamp
+        return diff / (1000 * 60 * 60 * 24) // Convert milliseconds to days
     }
 
     fun getMeasurement(): Measurement? = measurement

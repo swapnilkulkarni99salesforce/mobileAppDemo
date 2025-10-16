@@ -16,7 +16,7 @@ class EditableMeasurementAdapter(
 ) : RecyclerView.Adapter<EditableMeasurementAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val inputLayout: TextInputLayout = view.findViewById(R.id.measurement_input).parent as TextInputLayout
+        private val inputLayout: TextInputLayout = view.findViewById(R.id.measurement_input_layout)
         private val input: TextInputEditText = view.findViewById(R.id.measurement_input)
         
         fun bind(field: EditableMeasurementField) {

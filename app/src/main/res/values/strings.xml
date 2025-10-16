@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Perfect Fit</string>
+    <string name="home">Home</string>
+    <string name="customers">Customers</string>
+    <string name="orders">Orders</string>
+</resources>
+

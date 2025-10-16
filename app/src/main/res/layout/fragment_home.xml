@@ -62,12 +62,15 @@
                 android:text="📊 View your business metrics"
                 android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/register_customer_button"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="👥 Manage customers"
-                android:textSize="16sp" />
+                android:layout_marginTop="16dp"
+                android:text="👥 Register New Customer"
+                android:textSize="16sp"
+                android:padding="12dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
             <TextView
                 android:layout_width="wrap_content"

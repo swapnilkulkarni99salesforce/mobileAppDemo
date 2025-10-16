@@ -1,9 +1,21 @@
 package com.example.perfectfit.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "customers")
 data class Customer(
-    val id: Int,
-    val name: String,
-    val email: String,
-    val phone: String
-)
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val firstName: String,
+    val lastName: String,
+    val address: String,
+    val mobile: String,
+    val alternateMobile: String,
+    val birthDate: String
+) {
+    // Computed property for display
+    val fullName: String
+        get() = "$firstName $lastName"
+}
 

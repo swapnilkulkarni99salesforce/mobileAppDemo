@@ -13,9 +13,9 @@ class CustomersAdapter(private val customers: List<Customer>) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(customer: Customer) {
-            binding.customerName.text = customer.name
-            binding.customerEmail.text = customer.email
-            binding.customerPhone.text = customer.phone
+            binding.customerName.text = customer.fullName
+            binding.customerEmail.text = customer.address
+            binding.customerPhone.text = customer.mobile
         }
     }
 

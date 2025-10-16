@@ -21,6 +21,25 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupClickListeners()
+    }
+
+    private fun setupClickListeners() {
+        binding.registerCustomerButton.setOnClickListener {
+            navigateToRegisterCustomer()
+        }
+    }
+
+    private fun navigateToRegisterCustomer() {
+        val registerFragment = RegisterCustomerFragment()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, registerFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

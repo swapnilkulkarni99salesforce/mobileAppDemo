@@ -13,6 +13,7 @@ import com.example.perfectfit.models.MeasurementItem
 class PantMeasurementsFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
+    private var adapter: MeasurementListAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,11 +29,6 @@ class PantMeasurementsFragment : Fragment() {
         recyclerView = view.findViewById(R.id.pant_measurements_recycler)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         
-        observeMeasurements()
-    }
-    
-    override fun onResume() {
-        super.onResume()
         observeMeasurements()
     }
     
@@ -61,7 +57,8 @@ class PantMeasurementsFragment : Fragment() {
             )
         }
         
-        recyclerView.adapter = MeasurementListAdapter(measurements)
+        adapter = MeasurementListAdapter(measurements)
+        recyclerView.adapter = adapter
     }
 }
 

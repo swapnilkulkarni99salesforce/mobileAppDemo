@@ -14,6 +14,7 @@ import com.example.perfectfit.models.MeasurementItem
 class KurtiMeasurementsFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
+    private var adapter: MeasurementListAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,14 +33,8 @@ class KurtiMeasurementsFragment : Fragment() {
         observeMeasurements()
     }
     
-    override fun onResume() {
-        super.onResume()
-        // Refresh data when returning from edit screen
-        observeMeasurements()
-    }
-    
     private fun observeMeasurements() {
-        // Get the parent fragment and observe its measurement LiveData
+        // Get the parent fragment and observe its measurement LiveData (only once)
         (parentFragment as? ClientFitProfileFragment)?.let { parent ->
             parent.getMeasurementLiveData()?.observe(viewLifecycleOwner) { measurement ->
                 updateUI(measurement)
@@ -94,7 +89,9 @@ class KurtiMeasurementsFragment : Fragment() {
             )
         }
         
-        recyclerView.adapter = MeasurementListAdapter(measurements)
+        // Create new adapter with all 19 measurements
+        adapter = MeasurementListAdapter(measurements)
+        recyclerView.adapter = adapter
     }
 }
 

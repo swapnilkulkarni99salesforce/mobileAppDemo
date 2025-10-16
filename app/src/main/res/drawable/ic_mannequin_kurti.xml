@@ -83,35 +83,35 @@
             android:pathData="M45,85 L155,85"
             android:strokeColor="@color/sage_green"
             android:strokeWidth="1"
-            android:pathEffect="dashPathEffect(5,3)"/>
+            android:strokeDasharray="5,3"/>
         
         <!-- Chest line -->
         <path
             android:pathData="M50,130 L150,130"
             android:strokeColor="@color/sage_green"
             android:strokeWidth="1"
-            android:pathEffect="dashPathEffect(5,3)"/>
+            android:strokeDasharray="5,3"/>
         
         <!-- Waist line -->
         <path
             android:pathData="M70,260 L130,260"
             android:strokeColor="@color/sage_green"
             android:strokeWidth="1"
-            android:pathEffect="dashPathEffect(5,3)"/>
+            android:strokeDasharray="5,3"/>
         
         <!-- Hip line -->
         <path
             android:pathData="M65,290 L135,290"
             android:strokeColor="@color/sage_green"
             android:strokeWidth="1"
-            android:pathEffect="dashPathEffect(5,3)"/>
+            android:strokeDasharray="5,3"/>
         
         <!-- Length line -->
         <path
             android:pathData="M165,85 L165,310"
             android:strokeColor="@color/sage_green"
             android:strokeWidth="1"
-            android:pathEffect="dashPathEffect(5,3)"/>
+            android:strokeDasharray="5,3"/>
     </group>
     
     <!-- Measurement numbers -->

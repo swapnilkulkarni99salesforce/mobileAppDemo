@@ -109,28 +109,27 @@
             android:strokeWidth="1"/>
     </group>
     
-    <!-- Measurement numbers -->
+    <!-- Measurement markers -->
     <group>
-        <circle
+        <!-- Marker 1 at shoulder -->
+        <path
             android:fillColor="@color/rose_gold"
-            android:cx="40"
-            android:cy="85"
-            android:radius="8"/>
-        <circle
+            android:pathData="M40,85 m-8,0 a8,8 0,1,0 16,0 a8,8 0,1,0 -16,0"/>
+        
+        <!-- Marker 2 at chest -->
+        <path
             android:fillColor="@color/rose_gold"
-            android:cx="40"
-            android:cy="130"
-            android:radius="8"/>
-        <circle
+            android:pathData="M40,130 m-8,0 a8,8 0,1,0 16,0 a8,8 0,1,0 -16,0"/>
+        
+        <!-- Marker 3 at waist -->
+        <path
             android:fillColor="@color/rose_gold"
-            android:cx="40"
-            android:cy="260"
-            android:radius="8"/>
-        <circle
+            android:pathData="M40,260 m-8,0 a8,8 0,1,0 16,0 a8,8 0,1,0 -16,0"/>
+        
+        <!-- Marker 4 at hip -->
+        <path
             android:fillColor="@color/rose_gold"
-            android:cx="40"
-            android:cy="290"
-            android:radius="8"/>
+            android:pathData="M40,290 m-8,0 a8,8 0,1,0 16,0 a8,8 0,1,0 -16,0"/>
     </group>
     
 </vector>

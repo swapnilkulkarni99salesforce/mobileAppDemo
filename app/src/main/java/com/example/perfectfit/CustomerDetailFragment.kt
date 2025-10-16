@@ -104,9 +104,21 @@ class CustomerDetailFragment : Fragment() {
     }
 
     private fun setupButtons() {
+        binding.viewMeasurementsButton.setOnClickListener {
+            customer?.let { navigateToFitProfile(it) }
+        }
+        
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
+    }
+    
+    private fun navigateToFitProfile(customer: Customer) {
+        val fitProfileFragment = ClientFitProfileFragment.newInstance(customer)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fitProfileFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onDestroyView() {

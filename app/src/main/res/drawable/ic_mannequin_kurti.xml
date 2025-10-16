@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="400dp"
+    android:viewportWidth="200"
+    android:viewportHeight="400">
+    
+    <!-- Female figure outline -->
+    <group>
+        <!-- Head -->
+        <path
+            android:pathData="M100,20 C100,20 80,20 80,40 C80,55 90,65 100,65 C110,65 120,55 120,40 C120,20 100,20 100,20 Z"
+            android:strokeColor="@color/rose_gold"
+            android:strokeWidth="2"
+            android:fillColor="#00000000"/>
+        
+        <!-- Neck -->
+        <path
+            android:pathData="M95,65 L95,85 M105,65 L105,85"
+            android:strokeColor="@color/rose_gold"
+            android:strokeWidth="2"/>
+        
+        <!-- Shoulders -->
+        <path
+            android:pathData="M60,85 L100,85 L140,85"
+            android:strokeColor="@color/rose_gold_dark"
+            android:strokeWidth="3"/>
+        
+        <!-- Upper body - chest area -->
+        <path
+            android:pathData="M60,85 C58,95 58,110 60,120 L60,160 L70,180 L75,200 L75,240 L78,260"
+            android:strokeColor="@color/rose_gold"
+            android:strokeWidth="2"
+            android:fillColor="#00000000"/>
+        
+        <path
+            android:pathData="M140,85 C142,95 142,110 140,120 L140,160 L130,180 L125,200 L125,240 L122,260"
+            android:strokeColor="@color/rose_gold"
+            android:strokeWidth="2"
+            android:fillColor="#00000000"/>
+        
+        <!-- Waist -->
+        <path
+            android:pathData="M78,260 L100,260 L122,260"
+            android:strokeColor="@color/rose_gold_dark"
+            android:strokeWidth="2"/>
+        
+        <!-- Hips -->
+        <path
+            android:pathData="M78,260 C76,270 75,280 75,290 L75,310"
+            android:strokeColor="@color/rose_gold"
+            android:strokeWidth="2"/>
+        <path
+            android:pathData="M122,260 C124,270 125,280 125,290 L125,310"
+            android:strokeColor="@color/rose_gold"
+            android:strokeWidth="2"/>
+        
+        <!-- Legs outline -->
+        <path
+            android:pathData="M75,310 L75,350 L75,390"
+            android:strokeColor="@color/rose_gold"
+            android:strokeWidth="2"/>
+        <path
+            android:pathData="M125,310 L125,350 L125,390"
+            android:strokeColor="@color/rose_gold"
+            android:strokeWidth="2"/>
+        
+        <!-- Arms -->
+        <path
+            android:pathData="M60,85 L55,100 L52,120 L50,140"
+            android:strokeColor="@color/rose_gold"
+            android:strokeWidth="2"/>
+        <path
+            android:pathData="M140,85 L145,100 L148,120 L150,140"
+            android:strokeColor="@color/rose_gold"
+            android:strokeWidth="2"/>
+    </group>
+    
+    <!-- Measurement indicator lines (dashed) -->
+    <group>
+        <!-- Shoulder line -->
+        <path
+            android:pathData="M45,85 L155,85"
+            android:strokeColor="@color/sage_green"
+            android:strokeWidth="1"
+            android:pathEffect="dashPathEffect(5,3)"/>
+        
+        <!-- Chest line -->
+        <path
+            android:pathData="M50,130 L150,130"
+            android:strokeColor="@color/sage_green"
+            android:strokeWidth="1"
+            android:pathEffect="dashPathEffect(5,3)"/>
+        
+        <!-- Waist line -->
+        <path
+            android:pathData="M70,260 L130,260"
+            android:strokeColor="@color/sage_green"
+            android:strokeWidth="1"
+            android:pathEffect="dashPathEffect(5,3)"/>
+        
+        <!-- Hip line -->
+        <path
+            android:pathData="M65,290 L135,290"
+            android:strokeColor="@color/sage_green"
+            android:strokeWidth="1"
+            android:pathEffect="dashPathEffect(5,3)"/>
+        
+        <!-- Length line -->
+        <path
+            android:pathData="M165,85 L165,310"
+            android:strokeColor="@color/sage_green"
+            android:strokeWidth="1"
+            android:pathEffect="dashPathEffect(5,3)"/>
+    </group>
+    
+    <!-- Measurement numbers -->
+    <group>
+        <circle
+            android:fillColor="@color/rose_gold"
+            android:cx="40"
+            android:cy="85"
+            android:radius="8"/>
+        <circle
+            android:fillColor="@color/rose_gold"
+            android:cx="40"
+            android:cy="130"
+            android:radius="8"/>
+        <circle
+            android:fillColor="@color/rose_gold"
+            android:cx="40"
+            android:cy="260"
+            android:radius="8"/>
+        <circle
+            android:fillColor="@color/rose_gold"
+            android:cx="40"
+            android:cy="290"
+            android:radius="8"/>
+    </group>
+    
+</vector>
+

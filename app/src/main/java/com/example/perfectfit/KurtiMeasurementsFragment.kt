@@ -25,12 +25,16 @@ class KurtiMeasurementsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         val measurement = (parentFragment as? ClientFitProfileFragment)?.getMeasurement()
+        val recyclerView = view.findViewById<RecyclerView>(R.id.measurements_recycler)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         
-        if (measurement != null) {
-            val recyclerView = view.findViewById<RecyclerView>(R.id.measurements_recycler)
-            recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            
-            val measurements = listOf(
+        val measurements = if (measurement != null) {
+            listOf(
+                MeasurementItem("Kurti Length", measurement.kurtiLength),
+                MeasurementItem("Full Shoulder", measurement.fullShoulder),
+                MeasurementItem("Upper Chest Round", measurement.upperChestRound),
+                MeasurementItem("Chest Round", measurement.chestRound),
+                MeasurementItem("Waist Round", measurement.waistRound),
                 MeasurementItem("Shoulder to Apex", measurement.shoulderToApex),
                 MeasurementItem("Apex to Apex", measurement.apexToApex),
                 MeasurementItem("Shoulder to Low Chest Length", measurement.shoulderToLowChestLength),
@@ -46,9 +50,31 @@ class KurtiMeasurementsFragment : Fragment() {
                 MeasurementItem("Sleeves Height (3/4th)", measurement.sleevesHeightThreeQuarter),
                 MeasurementItem("Sleeves Round", measurement.sleevesRound)
             )
-            
-            recyclerView.adapter = MeasurementListAdapter(measurements)
+        } else {
+            listOf(
+                MeasurementItem("Kurti Length", ""),
+                MeasurementItem("Full Shoulder", ""),
+                MeasurementItem("Upper Chest Round", ""),
+                MeasurementItem("Chest Round", ""),
+                MeasurementItem("Waist Round", ""),
+                MeasurementItem("Shoulder to Apex", ""),
+                MeasurementItem("Apex to Apex", ""),
+                MeasurementItem("Shoulder to Low Chest Length", ""),
+                MeasurementItem("Skap Length", ""),
+                MeasurementItem("Skap Length Round", ""),
+                MeasurementItem("Hip Round", ""),
+                MeasurementItem("Front Neck Deep", ""),
+                MeasurementItem("Front Neck Width", ""),
+                MeasurementItem("Back Neck Deep", ""),
+                MeasurementItem("Ready Shoulder", ""),
+                MeasurementItem("Sleeves Height (Short)", ""),
+                MeasurementItem("Sleeves Height (Elbow)", ""),
+                MeasurementItem("Sleeves Height (3/4th)", ""),
+                MeasurementItem("Sleeves Round", "")
+            )
         }
+        
+        recyclerView.adapter = MeasurementListAdapter(measurements)
     }
 }
 

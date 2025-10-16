@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_light"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Measurements"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/rose_gold"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/customer_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customer Name"
+            android:textSize="16sp"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Kurti Measurements Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="KURTI MEASUREMENTS"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/rose_gold_dark"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/kurti_fields_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
+
+        <!-- Pant Measurements Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PANT MEASUREMENTS"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/rose_gold_dark"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="12dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/pant_fields_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
+
+        <!-- Blouse Measurements Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BLOUSE MEASUREMENTS"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/rose_gold_dark"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="12dp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/blouse_fields_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
+
+        <!-- Action Buttons -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Save Measurements"
+            android:textSize="16sp"
+            android:padding="16dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancel_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:text="Cancel"
+            android:textSize="16sp"
+            android:padding="16dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+    </LinearLayout>
+
+</ScrollView>
+

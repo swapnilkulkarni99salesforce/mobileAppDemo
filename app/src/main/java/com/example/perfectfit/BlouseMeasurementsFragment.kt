@@ -5,6 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.perfectfit.adapters.MeasurementListAdapter
+import com.example.perfectfit.models.MeasurementItem
 
 class BlouseMeasurementsFragment : Fragment() {
 
@@ -20,7 +24,20 @@ class BlouseMeasurementsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         val measurement = (parentFragment as? ClientFitProfileFragment)?.getMeasurement()
-        // Populate blouse measurements if needed
+        val recyclerView = view.findViewById<RecyclerView>(R.id.blouse_measurements_recycler)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        
+        val measurements = if (measurement != null) {
+            listOf(
+                MeasurementItem("Blouse Length", measurement.blouseLength)
+            )
+        } else {
+            listOf(
+                MeasurementItem("Blouse Length", "")
+            )
+        }
+        
+        recyclerView.adapter = MeasurementListAdapter(measurements)
     }
 }
 

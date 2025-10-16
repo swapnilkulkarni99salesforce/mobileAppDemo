@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_light">
@@ -20,8 +19,11 @@
             android:textColor="@color/rose_gold"
             android:layout_marginBottom="16dp"/>
 
-        <include layout="@layout/item_measurement"
-            android:id="@+id/blouse_length"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/blouse_measurements_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
 
     </LinearLayout>
 

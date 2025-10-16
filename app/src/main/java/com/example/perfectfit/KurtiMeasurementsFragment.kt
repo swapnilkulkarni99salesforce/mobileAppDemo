@@ -29,6 +29,8 @@ class KurtiMeasurementsFragment : Fragment() {
         
         recyclerView = view.findViewById(R.id.measurements_recycler)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.setHasFixedSize(false)
+        recyclerView.isNestedScrollingEnabled = false
         
         observeMeasurements()
     }
@@ -43,55 +45,57 @@ class KurtiMeasurementsFragment : Fragment() {
     }
     
     private fun updateUI(measurement: com.example.perfectfit.models.Measurement?) {
-        val measurements = if (measurement != null) {
-            listOf(
-                MeasurementItem("Kurti Length", measurement.kurtiLength),
-                MeasurementItem("Full Shoulder", measurement.fullShoulder),
-                MeasurementItem("Upper Chest Round", measurement.upperChestRound),
-                MeasurementItem("Chest Round", measurement.chestRound),
-                MeasurementItem("Waist Round", measurement.waistRound),
-                MeasurementItem("Shoulder to Apex", measurement.shoulderToApex),
-                MeasurementItem("Apex to Apex", measurement.apexToApex),
-                MeasurementItem("Shoulder to Low Chest Length", measurement.shoulderToLowChestLength),
-                MeasurementItem("Skap Length", measurement.skapLength),
-                MeasurementItem("Skap Length Round", measurement.skapLengthRound),
-                MeasurementItem("Hip Round", measurement.hipRound),
-                MeasurementItem("Front Neck Deep", measurement.frontNeckDeep),
-                MeasurementItem("Front Neck Width", measurement.frontNeckWidth),
-                MeasurementItem("Back Neck Deep", measurement.backNeckDeep),
-                MeasurementItem("Ready Shoulder", measurement.readyShoulder),
-                MeasurementItem("Sleeves Height (Short)", measurement.sleevesHeightShort),
-                MeasurementItem("Sleeves Height (Elbow)", measurement.sleevesHeightElbow),
-                MeasurementItem("Sleeves Height (3/4th)", measurement.sleevesHeightThreeQuarter),
-                MeasurementItem("Sleeves Round", measurement.sleevesRound)
-            )
+        val measurements = mutableListOf<MeasurementItem>()
+        
+        if (measurement != null) {
+            measurements.add(MeasurementItem("Kurti Length", measurement.kurtiLength))
+            measurements.add(MeasurementItem("Full Shoulder", measurement.fullShoulder))
+            measurements.add(MeasurementItem("Upper Chest Round", measurement.upperChestRound))
+            measurements.add(MeasurementItem("Chest Round", measurement.chestRound))
+            measurements.add(MeasurementItem("Waist Round", measurement.waistRound))
+            measurements.add(MeasurementItem("Shoulder to Apex", measurement.shoulderToApex))
+            measurements.add(MeasurementItem("Apex to Apex", measurement.apexToApex))
+            measurements.add(MeasurementItem("Shoulder to Low Chest Length", measurement.shoulderToLowChestLength))
+            measurements.add(MeasurementItem("Skap Length", measurement.skapLength))
+            measurements.add(MeasurementItem("Skap Length Round", measurement.skapLengthRound))
+            measurements.add(MeasurementItem("Hip Round", measurement.hipRound))
+            measurements.add(MeasurementItem("Front Neck Deep", measurement.frontNeckDeep))
+            measurements.add(MeasurementItem("Front Neck Width", measurement.frontNeckWidth))
+            measurements.add(MeasurementItem("Back Neck Deep", measurement.backNeckDeep))
+            measurements.add(MeasurementItem("Ready Shoulder", measurement.readyShoulder))
+            measurements.add(MeasurementItem("Sleeves Height (Short)", measurement.sleevesHeightShort))
+            measurements.add(MeasurementItem("Sleeves Height (Elbow)", measurement.sleevesHeightElbow))
+            measurements.add(MeasurementItem("Sleeves Height (3/4th)", measurement.sleevesHeightThreeQuarter))
+            measurements.add(MeasurementItem("Sleeves Round", measurement.sleevesRound))
         } else {
-            listOf(
-                MeasurementItem("Kurti Length", ""),
-                MeasurementItem("Full Shoulder", ""),
-                MeasurementItem("Upper Chest Round", ""),
-                MeasurementItem("Chest Round", ""),
-                MeasurementItem("Waist Round", ""),
-                MeasurementItem("Shoulder to Apex", ""),
-                MeasurementItem("Apex to Apex", ""),
-                MeasurementItem("Shoulder to Low Chest Length", ""),
-                MeasurementItem("Skap Length", ""),
-                MeasurementItem("Skap Length Round", ""),
-                MeasurementItem("Hip Round", ""),
-                MeasurementItem("Front Neck Deep", ""),
-                MeasurementItem("Front Neck Width", ""),
-                MeasurementItem("Back Neck Deep", ""),
-                MeasurementItem("Ready Shoulder", ""),
-                MeasurementItem("Sleeves Height (Short)", ""),
-                MeasurementItem("Sleeves Height (Elbow)", ""),
-                MeasurementItem("Sleeves Height (3/4th)", ""),
-                MeasurementItem("Sleeves Round", "")
-            )
+            measurements.add(MeasurementItem("Kurti Length", ""))
+            measurements.add(MeasurementItem("Full Shoulder", ""))
+            measurements.add(MeasurementItem("Upper Chest Round", ""))
+            measurements.add(MeasurementItem("Chest Round", ""))
+            measurements.add(MeasurementItem("Waist Round", ""))
+            measurements.add(MeasurementItem("Shoulder to Apex", ""))
+            measurements.add(MeasurementItem("Apex to Apex", ""))
+            measurements.add(MeasurementItem("Shoulder to Low Chest Length", ""))
+            measurements.add(MeasurementItem("Skap Length", ""))
+            measurements.add(MeasurementItem("Skap Length Round", ""))
+            measurements.add(MeasurementItem("Hip Round", ""))
+            measurements.add(MeasurementItem("Front Neck Deep", ""))
+            measurements.add(MeasurementItem("Front Neck Width", ""))
+            measurements.add(MeasurementItem("Back Neck Deep", ""))
+            measurements.add(MeasurementItem("Ready Shoulder", ""))
+            measurements.add(MeasurementItem("Sleeves Height (Short)", ""))
+            measurements.add(MeasurementItem("Sleeves Height (Elbow)", ""))
+            measurements.add(MeasurementItem("Sleeves Height (3/4th)", ""))
+            measurements.add(MeasurementItem("Sleeves Round", ""))
         }
+        
+        // Log to verify all measurements are added
+        android.util.Log.d("KurtiFragment", "Total measurements: ${measurements.size}")
         
         // Create new adapter with all 19 measurements
         adapter = MeasurementListAdapter(measurements)
         recyclerView.adapter = adapter
+        adapter?.notifyDataSetChanged()
     }
 }
 

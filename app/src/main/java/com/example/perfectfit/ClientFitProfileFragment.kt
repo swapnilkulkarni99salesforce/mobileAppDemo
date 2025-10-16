@@ -118,9 +118,6 @@ class ClientFitProfileFragment : Fragment() {
 
     private fun updateLastMeasurementInfo(timestamp: Long?) {
         if (timestamp != null && timestamp != 0L) {
-            val sdf = SimpleDateFormat("MMM dd, yyyy 'at' hh:mm a", Locale.getDefault())
-            binding.lastUpdatedText.text = "Last Updated: ${sdf.format(Date(timestamp))}"
-            
             // Calculate and display days ago
             val daysAgo = getDaysAgo(timestamp)
             val timeAgoText = when {
@@ -133,7 +130,6 @@ class ClientFitProfileFragment : Fragment() {
             }
             binding.lastMeasurementInfo.text = timeAgoText
         } else {
-            binding.lastUpdatedText.text = "No measurements recorded"
             binding.lastMeasurementInfo.text = "Click the edit button to add measurements"
         }
     }

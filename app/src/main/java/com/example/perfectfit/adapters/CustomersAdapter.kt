@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.perfectfit.databinding.ItemCustomerBinding
 import com.example.perfectfit.models.Customer
 
-class CustomersAdapter(private val customers: List<Customer>) :
-    RecyclerView.Adapter<CustomersAdapter.CustomerViewHolder>() {
+class CustomersAdapter(
+    private val customers: List<Customer>,
+    private val onItemClick: (Customer) -> Unit
+) : RecyclerView.Adapter<CustomersAdapter.CustomerViewHolder>() {
 
     inner class CustomerViewHolder(private val binding: ItemCustomerBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -16,6 +18,10 @@ class CustomersAdapter(private val customers: List<Customer>) :
             binding.customerName.text = customer.fullName
             binding.customerEmail.text = customer.address
             binding.customerPhone.text = customer.mobile
+            
+            binding.root.setOnClickListener {
+                onItemClick(customer)
+            }
         }
     }
 

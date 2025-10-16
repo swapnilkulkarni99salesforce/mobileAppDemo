@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.perfectfit.adapters.CustomersAdapter
 import com.example.perfectfit.database.AppDatabase
 import com.example.perfectfit.databinding.FragmentCustomersBinding
+import com.example.perfectfit.models.Customer
 
 class CustomersFragment : Fragment() {
 
@@ -34,7 +35,9 @@ class CustomersFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = CustomersAdapter(emptyList())
+        adapter = CustomersAdapter(emptyList()) { customer ->
+            navigateToCustomerDetail(customer)
+        }
         binding.customersRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             this.adapter = this@CustomersFragment.adapter
@@ -43,9 +46,19 @@ class CustomersFragment : Fragment() {
 
     private fun observeCustomers() {
         database.customerDao().getAllCustomers().observe(viewLifecycleOwner) { customers ->
-            adapter = CustomersAdapter(customers)
+            adapter = CustomersAdapter(customers) { customer ->
+                navigateToCustomerDetail(customer)
+            }
             binding.customersRecyclerView.adapter = adapter
         }
+    }
+
+    private fun navigateToCustomerDetail(customer: Customer) {
+        val detailFragment = CustomerDetailFragment.newInstance(customer)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, detailFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onDestroyView() {

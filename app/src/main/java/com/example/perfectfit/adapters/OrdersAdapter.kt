@@ -15,8 +15,9 @@ class OrdersAdapter(private val orders: List<Order>) :
         fun bind(order: Order) {
             binding.orderId.text = order.orderId
             binding.orderCustomer.text = "Customer: ${order.customerName}"
-            binding.orderDate.text = "Date: ${order.date}"
-            binding.orderAmount.text = "Amount: ${order.amount}"
+            binding.orderType.text = "Type: ${order.orderType}"
+            binding.orderDate.text = "Order Date: ${order.orderDate}"
+            binding.orderDeliveryDate.text = "Delivery: ${order.estimatedDeliveryDate}"
             binding.orderStatus.text = order.status
         }
     }

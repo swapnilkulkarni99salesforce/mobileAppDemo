@@ -108,6 +108,10 @@ class CustomerDetailFragment : Fragment() {
             customer?.let { navigateToFitProfile(it) }
         }
         
+        binding.createOrderButton.setOnClickListener {
+            customer?.let { navigateToCreateOrder(it) }
+        }
+        
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
@@ -117,6 +121,14 @@ class CustomerDetailFragment : Fragment() {
         val fitProfileFragment = ClientFitProfileFragment.newInstance(customer)
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fitProfileFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+    
+    private fun navigateToCreateOrder(customer: Customer) {
+        val createOrderFragment = CreateOrderFragment.newInstance(customer)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, createOrderFragment)
             .addToBackStack(null)
             .commit()
     }

@@ -6,12 +6,14 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.perfectfit.models.Customer
 import com.example.perfectfit.models.Measurement
+import com.example.perfectfit.models.Order
 
-@Database(entities = [Customer::class, Measurement::class], version = 3, exportSchema = false)
+@Database(entities = [Customer::class, Measurement::class, Order::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     
     abstract fun customerDao(): CustomerDao
     abstract fun measurementDao(): MeasurementDao
+    abstract fun orderDao(): OrderDao
     
     companion object {
         @Volatile

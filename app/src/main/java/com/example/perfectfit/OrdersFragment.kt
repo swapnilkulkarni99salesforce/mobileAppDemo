@@ -5,15 +5,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.perfectfit.adapters.OrdersAdapter
+import com.example.perfectfit.database.AppDatabase
 import com.example.perfectfit.databinding.FragmentOrdersBinding
 import com.example.perfectfit.models.Order
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class OrdersFragment : Fragment() {
 
     private var _binding: FragmentOrdersBinding? = null
     private val binding get() = _binding!!
+    private lateinit var database: AppDatabase
+    private lateinit var ordersAdapter: OrdersAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        database = AppDatabase.getDatabase(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,29 +39,47 @@ class OrdersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        loadOrders()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Reload orders when fragment is resumed (e.g., after creating a new order)
+        loadOrders()
     }
 
     private fun setupRecyclerView() {
-        val orders = getSampleOrders()
-        val adapter = OrdersAdapter(orders)
+        ordersAdapter = OrdersAdapter(emptyList())
         
         binding.ordersRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            this.adapter = adapter
+            adapter = ordersAdapter
         }
     }
 
-    private fun getSampleOrders(): List<Order> {
-        return listOf(
-            Order(1, "Order #12345", "John Doe", "Oct 16, 2025", "$99.99", "Pending"),
-            Order(2, "Order #12346", "Jane Smith", "Oct 15, 2025", "$149.99", "Completed"),
-            Order(3, "Order #12347", "Michael Johnson", "Oct 14, 2025", "$79.99", "Pending"),
-            Order(4, "Order #12348", "Emily Davis", "Oct 13, 2025", "$199.99", "Shipped"),
-            Order(5, "Order #12349", "David Wilson", "Oct 12, 2025", "$59.99", "Completed"),
-            Order(6, "Order #12350", "Sarah Brown", "Oct 11, 2025", "$129.99", "Processing"),
-            Order(7, "Order #12351", "James Martinez", "Oct 10, 2025", "$89.99", "Pending"),
-            Order(8, "Order #12352", "Lisa Anderson", "Oct 09, 2025", "$169.99", "Completed")
-        )
+    private fun loadOrders() {
+        lifecycleScope.launch {
+            try {
+                val orders = withContext(Dispatchers.IO) {
+                    database.orderDao().getAllOrders()
+                }
+                
+                withContext(Dispatchers.Main) {
+                    if (orders.isEmpty()) {
+                        binding.emptyStateText.visibility = View.VISIBLE
+                        binding.ordersRecyclerView.visibility = View.GONE
+                    } else {
+                        binding.emptyStateText.visibility = View.GONE
+                        binding.ordersRecyclerView.visibility = View.VISIBLE
+                        ordersAdapter = OrdersAdapter(orders)
+                        binding.ordersRecyclerView.adapter = ordersAdapter
+                    }
+                }
+            } catch (e: Exception) {
+                // Handle error
+                e.printStackTrace()
+            }
+        }
     }
 
     override fun onDestroyView() {

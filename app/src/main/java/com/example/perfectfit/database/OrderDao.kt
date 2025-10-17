@@ -26,5 +26,25 @@ interface OrderDao {
     
     @Query("DELETE FROM orders WHERE id = :orderId")
     suspend fun deleteOrder(orderId: Int)
+    
+    // Sync-related queries
+    
+    @Query("SELECT * FROM orders WHERE syncStatus = :status")
+    suspend fun getOrdersBySyncStatus(status: String): List<Order>
+    
+    @Query("SELECT * FROM orders WHERE syncStatus = 'PENDING' OR syncStatus = 'FAILED'")
+    suspend fun getUnsyncedOrders(): List<Order>
+    
+    @Query("SELECT * FROM orders WHERE lastModified > :timestamp")
+    suspend fun getOrdersModifiedAfter(timestamp: Long): List<Order>
+    
+    @Query("UPDATE orders SET syncStatus = :status WHERE id = :orderId")
+    suspend fun updateSyncStatus(orderId: Int, status: String)
+    
+    @Query("UPDATE orders SET serverId = :serverId, syncStatus = :status, lastModified = :timestamp WHERE id = :localId")
+    suspend fun updateServerInfo(localId: Int, serverId: String, status: String, timestamp: Long)
+    
+    @Query("SELECT * FROM orders WHERE serverId = :serverId")
+    suspend fun getOrderByServerId(serverId: String): Order?
 }
 

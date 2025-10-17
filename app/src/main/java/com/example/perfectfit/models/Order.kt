@@ -27,7 +27,12 @@ data class Order(
     val estimatedDeliveryDate: String,
     val instructions: String,
     val amount: Double,
-    val status: String = "Pending" // Pending, In Progress, Completed, Closed
+    val status: String = "Pending", // Pending, In Progress, Completed, Closed
+    
+    // Sync-related fields
+    val serverId: String? = null, // MongoDB _id from server
+    val lastModified: Long = System.currentTimeMillis(), // Timestamp for conflict resolution
+    val syncStatus: String = "PENDING" // PENDING, SYNCED, FAILED
 ) {
     // Computed property for order ID display
     val orderId: String
@@ -36,5 +41,11 @@ data class Order(
     // Computed property for formatted amount with Rupee symbol
     val formattedAmount: String
         get() = "₹${String.format("%.2f", amount)}"
+    
+    companion object {
+        const val SYNC_PENDING = "PENDING"
+        const val SYNC_SYNCED = "SYNCED"
+        const val SYNC_FAILED = "FAILED"
+    }
 }
 

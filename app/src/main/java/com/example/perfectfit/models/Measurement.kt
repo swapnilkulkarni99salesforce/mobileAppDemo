@@ -68,6 +68,17 @@ data class Measurement(
     val blouseHookOn: String = "", // "left" or "right"
     
     // Metadata
-    val lastUpdated: Long = System.currentTimeMillis()
-)
+    val lastUpdated: Long = System.currentTimeMillis(),
+    
+    // Sync-related fields
+    val serverId: String? = null,
+    val lastModified: Long = System.currentTimeMillis(),
+    val syncStatus: String = "PENDING"
+) {
+    companion object {
+        const val SYNC_PENDING = "PENDING"
+        const val SYNC_SYNCED = "SYNCED"
+        const val SYNC_FAILED = "FAILED"
+    }
+}
 

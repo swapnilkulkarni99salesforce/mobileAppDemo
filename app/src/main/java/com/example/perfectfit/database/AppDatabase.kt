@@ -8,7 +8,7 @@ import com.example.perfectfit.models.Customer
 import com.example.perfectfit.models.Measurement
 import com.example.perfectfit.models.Order
 
-@Database(entities = [Customer::class, Measurement::class, Order::class], version = 5, exportSchema = false)
+@Database(entities = [Customer::class, Measurement::class, Order::class], version = 6, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     
     abstract fun customerDao(): CustomerDao

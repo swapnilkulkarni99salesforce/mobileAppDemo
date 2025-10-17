@@ -12,10 +12,21 @@ data class Customer(
     val address: String,
     val mobile: String,
     val alternateMobile: String,
-    val birthDate: String
+    val birthDate: String,
+    
+    // Sync-related fields
+    val serverId: String? = null,
+    val lastModified: Long = System.currentTimeMillis(),
+    val syncStatus: String = "PENDING"
 ) {
     // Computed property for display
     val fullName: String
         get() = "$firstName $lastName"
+    
+    companion object {
+        const val SYNC_PENDING = "PENDING"
+        const val SYNC_SYNCED = "SYNCED"
+        const val SYNC_FAILED = "FAILED"
+    }
 }
 

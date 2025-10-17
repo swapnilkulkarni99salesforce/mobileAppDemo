@@ -25,5 +25,28 @@ interface MeasurementDao {
     
     @Query("DELETE FROM measurements WHERE customerId = :customerId")
     suspend fun deleteMeasurementsByCustomerId(customerId: Int)
+    
+    // Sync-related queries
+    
+    @Query("SELECT * FROM measurements WHERE syncStatus = :status")
+    suspend fun getMeasurementsBySyncStatus(status: String): List<Measurement>
+    
+    @Query("SELECT * FROM measurements WHERE syncStatus = 'PENDING' OR syncStatus = 'FAILED'")
+    suspend fun getUnsyncedMeasurements(): List<Measurement>
+    
+    @Query("SELECT * FROM measurements WHERE lastModified > :timestamp")
+    suspend fun getMeasurementsModifiedAfter(timestamp: Long): List<Measurement>
+    
+    @Query("UPDATE measurements SET syncStatus = :status WHERE id = :measurementId")
+    suspend fun updateSyncStatus(measurementId: Int, status: String)
+    
+    @Query("UPDATE measurements SET serverId = :serverId, syncStatus = :status, lastModified = :timestamp WHERE id = :localId")
+    suspend fun updateServerInfo(localId: Int, serverId: String, status: String, timestamp: Long)
+    
+    @Query("SELECT * FROM measurements WHERE serverId = :serverId")
+    suspend fun getMeasurementByServerId(serverId: String): Measurement?
+    
+    @Query("SELECT * FROM measurements")
+    suspend fun getAllMeasurements(): List<Measurement>
 }
 

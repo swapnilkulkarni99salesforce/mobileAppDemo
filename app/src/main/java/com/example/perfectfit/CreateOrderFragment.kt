@@ -142,6 +142,7 @@ class CreateOrderFragment : Fragment() {
         val orderType = binding.orderTypeDropdown.text.toString()
         val deliveryDate = binding.estimatedDeliveryInput.text.toString()
         val instructions = binding.instructionsInput.text.toString()
+        val amountStr = binding.amountInput.text.toString()
 
         // Validation
         if (orderType.isEmpty()) {
@@ -154,6 +155,23 @@ class CreateOrderFragment : Fragment() {
             return
         }
 
+        if (amountStr.isEmpty()) {
+            binding.amountLayout.error = "Please enter the order amount"
+            return
+        }
+
+        val amount = try {
+            amountStr.toDouble()
+        } catch (e: NumberFormatException) {
+            binding.amountLayout.error = "Please enter a valid amount"
+            return
+        }
+
+        if (amount <= 0) {
+            binding.amountLayout.error = "Amount must be greater than 0"
+            return
+        }
+
         customer?.let { cust ->
             val order = Order(
                 customerId = cust.id,
@@ -162,6 +180,7 @@ class CreateOrderFragment : Fragment() {
                 orderType = orderType,
                 estimatedDeliveryDate = deliveryDate,
                 instructions = instructions,
+                amount = amount,
                 status = "Pending"
             )
 

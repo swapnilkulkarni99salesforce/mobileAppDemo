@@ -26,10 +26,15 @@ data class Order(
     val orderType: String, // "Blouse" or "Kurti and Pant"
     val estimatedDeliveryDate: String,
     val instructions: String,
-    val status: String = "Pending"
+    val amount: Double,
+    val status: String = "Pending" // Pending, In Progress, Completed, Closed
 ) {
     // Computed property for order ID display
     val orderId: String
         get() = "Order #${id.toString().padStart(5, '0')}"
+    
+    // Computed property for formatted amount with Rupee symbol
+    val formattedAmount: String
+        get() = "₹${String.format("%.2f", amount)}"
 }
 

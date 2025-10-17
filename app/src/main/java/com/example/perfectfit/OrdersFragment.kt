@@ -49,7 +49,9 @@ class OrdersFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        ordersAdapter = OrdersAdapter(emptyList())
+        ordersAdapter = OrdersAdapter(emptyList()) { order ->
+            navigateToOrderDetail(order)
+        }
         
         binding.ordersRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -71,7 +73,9 @@ class OrdersFragment : Fragment() {
                     } else {
                         binding.emptyStateText.visibility = View.GONE
                         binding.ordersRecyclerView.visibility = View.VISIBLE
-                        ordersAdapter = OrdersAdapter(orders)
+                        ordersAdapter = OrdersAdapter(orders) { order ->
+                            navigateToOrderDetail(order)
+                        }
                         binding.ordersRecyclerView.adapter = ordersAdapter
                     }
                 }
@@ -80,6 +84,14 @@ class OrdersFragment : Fragment() {
                 e.printStackTrace()
             }
         }
+    }
+    
+    private fun navigateToOrderDetail(order: Order) {
+        val orderDetailFragment = OrderDetailFragment.newInstance(order.id)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, orderDetailFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onDestroyView() {

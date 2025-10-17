@@ -78,6 +78,16 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp" />
 
+        <TextView
+            android:id="@+id/order_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="₹1,500.00"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

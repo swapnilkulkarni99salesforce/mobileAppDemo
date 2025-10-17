@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.perfectfit.databinding.ItemOrderBinding
 import com.example.perfectfit.models.Order
 
-class OrdersAdapter(private val orders: List<Order>) :
-    RecyclerView.Adapter<OrdersAdapter.OrderViewHolder>() {
+class OrdersAdapter(
+    private val orders: List<Order>,
+    private val onOrderClick: (Order) -> Unit
+) : RecyclerView.Adapter<OrdersAdapter.OrderViewHolder>() {
 
     inner class OrderViewHolder(private val binding: ItemOrderBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -18,7 +20,12 @@ class OrdersAdapter(private val orders: List<Order>) :
             binding.orderType.text = "Type: ${order.orderType}"
             binding.orderDate.text = "Order Date: ${order.orderDate}"
             binding.orderDeliveryDate.text = "Delivery: ${order.estimatedDeliveryDate}"
+            binding.orderAmount.text = order.formattedAmount
             binding.orderStatus.text = order.status
+            
+            binding.root.setOnClickListener {
+                onOrderClick(order)
+            }
         }
     }
 

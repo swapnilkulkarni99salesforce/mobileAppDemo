@@ -91,6 +91,10 @@ class RegisterCustomerFragment : Fragment() {
             binding.mobileLayout.error = "Mobile number is required"
             return
         }
+        if (mobile.length < 10) {
+            binding.mobileLayout.error = "Mobile number must be at least 10 digits"
+            return
+        }
         if (birthDate.isEmpty()) {
             binding.birthDateLayout.error = "Birth date is required"
             return
@@ -103,20 +107,46 @@ class RegisterCustomerFragment : Fragment() {
         binding.mobileLayout.error = null
         binding.birthDateLayout.error = null
 
-        // Create customer object
-        val customer = Customer(
-            firstName = firstName,
-            lastName = lastName,
-            address = address,
-            mobile = mobile,
-            alternateMobile = alternateMobile,
-            birthDate = birthDate
-        )
-
         // Save to database
         lifecycleScope.launch {
             try {
+                // Check if customer already exists using composite key
+                val existingCustomer = database.customerDao().getCustomerByCompositeKey(
+                    firstName,
+                    lastName,
+                    mobile
+                )
+
+                if (existingCustomer != null) {
+                    // Customer already exists - show error message
+                    requireActivity().runOnUiThread {
+                        Toast.makeText(
+                            requireContext(),
+                            "Customer '$firstName $lastName' with mobile $mobile already exists!",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        
+                        // Highlight the conflicting fields
+                        binding.firstNameLayout.error = "Duplicate customer"
+                        binding.lastNameLayout.error = "Duplicate customer"
+                        binding.mobileLayout.error = "Duplicate customer"
+                    }
+                    return@launch
+                }
+
+                // Create customer object
+                val customer = Customer(
+                    firstName = firstName,
+                    lastName = lastName,
+                    address = address,
+                    mobile = mobile,
+                    alternateMobile = alternateMobile,
+                    birthDate = birthDate
+                )
+
+                // Insert customer
                 database.customerDao().insertCustomer(customer)
+                
                 requireActivity().runOnUiThread {
                     Toast.makeText(
                         requireContext(),
@@ -130,7 +160,7 @@ class RegisterCustomerFragment : Fragment() {
                     Toast.makeText(
                         requireContext(),
                         "Error registering customer: ${e.message}",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                 }
             }

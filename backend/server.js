@@ -70,16 +70,25 @@ app.post('/api/sync/batch', async (req, res) => {
     
     console.log(`Batch sync request: ${customers.length} customers, ${orders.length} orders, ${measurements.length} measurements`);
     
+    // Track processed IDs to avoid duplicates
+    const processedCustomerIds = new Set();
+    const processedOrderIds = new Set();
+    const processedMeasurementIds = new Set();
+    
     // Process customers
     const processedCustomers = [];
     for (const customer of customers) {
       const result = await upsertCustomer(customer);
       processedCustomers.push(result);
+      processedCustomerIds.add(result._id.toString());
     }
     
-    // Get new/updated customers from server
+    // Get new/updated customers from server (excluding just processed ones)
     const updatedCustomers = await customersCollection
-      .find({ lastModified: { $gt: lastSyncTimestamp } })
+      .find({ 
+        lastModified: { $gt: lastSyncTimestamp },
+        _id: { $nin: Array.from(processedCustomerIds).map(id => new ObjectId(id)) }
+      })
       .toArray();
     
     // Process orders
@@ -87,11 +96,15 @@ app.post('/api/sync/batch', async (req, res) => {
     for (const order of orders) {
       const result = await upsertOrder(order);
       processedOrders.push(result);
+      processedOrderIds.add(result._id.toString());
     }
     
-    // Get new/updated orders from server
+    // Get new/updated orders from server (excluding just processed ones)
     const updatedOrders = await ordersCollection
-      .find({ lastModified: { $gt: lastSyncTimestamp } })
+      .find({ 
+        lastModified: { $gt: lastSyncTimestamp },
+        _id: { $nin: Array.from(processedOrderIds).map(id => new ObjectId(id)) }
+      })
       .toArray();
     
     // Process measurements
@@ -99,17 +112,23 @@ app.post('/api/sync/batch', async (req, res) => {
     for (const measurement of measurements) {
       const result = await upsertMeasurement(measurement);
       processedMeasurements.push(result);
+      processedMeasurementIds.add(result._id.toString());
     }
     
-    // Get new/updated measurements from server
+    // Get new/updated measurements from server (excluding just processed ones)
     const updatedMeasurements = await measurementsCollection
-      .find({ lastModified: { $gt: lastSyncTimestamp } })
+      .find({ 
+        lastModified: { $gt: lastSyncTimestamp },
+        _id: { $nin: Array.from(processedMeasurementIds).map(id => new ObjectId(id)) }
+      })
       .toArray();
     
-    // Merge processed and updated data
+    // Merge processed and updated data (no duplicates now)
     const allCustomers = [...processedCustomers, ...updatedCustomers];
     const allOrders = [...processedOrders, ...updatedOrders];
     const allMeasurements = [...processedMeasurements, ...updatedMeasurements];
+    
+    console.log(`Sync response: ${allCustomers.length} customers, ${allOrders.length} orders, ${allMeasurements.length} measurements`);
     
     res.json({
       success: true,
@@ -165,14 +184,20 @@ app.post('/api/customers/batch', async (req, res) => {
   try {
     const { data, lastSyncTimestamp = 0 } = req.body;
     const processed = [];
+    const processedIds = new Set();
     
     for (const customer of data) {
       const result = await upsertCustomer(customer);
       processed.push(result);
+      processedIds.add(result._id.toString());
     }
     
+    // Exclude just processed records to avoid duplicates
     const updated = await customersCollection
-      .find({ lastModified: { $gt: lastSyncTimestamp } })
+      .find({ 
+        lastModified: { $gt: lastSyncTimestamp },
+        _id: { $nin: Array.from(processedIds).map(id => new ObjectId(id)) }
+      })
       .toArray();
     
     const all = [...processed, ...updated];
@@ -227,14 +252,20 @@ app.post('/api/orders/batch', async (req, res) => {
   try {
     const { data, lastSyncTimestamp = 0 } = req.body;
     const processed = [];
+    const processedIds = new Set();
     
     for (const order of data) {
       const result = await upsertOrder(order);
       processed.push(result);
+      processedIds.add(result._id.toString());
     }
     
+    // Exclude just processed records to avoid duplicates
     const updated = await ordersCollection
-      .find({ lastModified: { $gt: lastSyncTimestamp } })
+      .find({ 
+        lastModified: { $gt: lastSyncTimestamp },
+        _id: { $nin: Array.from(processedIds).map(id => new ObjectId(id)) }
+      })
       .toArray();
     
     const all = [...processed, ...updated];
@@ -267,14 +298,20 @@ app.post('/api/measurements/batch', async (req, res) => {
   try {
     const { data, lastSyncTimestamp = 0 } = req.body;
     const processed = [];
+    const processedIds = new Set();
     
     for (const measurement of data) {
       const result = await upsertMeasurement(measurement);
       processed.push(result);
+      processedIds.add(result._id.toString());
     }
     
+    // Exclude just processed records to avoid duplicates
     const updated = await measurementsCollection
-      .find({ lastModified: { $gt: lastSyncTimestamp } })
+      .find({ 
+        lastModified: { $gt: lastSyncTimestamp },
+        _id: { $nin: Array.from(processedIds).map(id => new ObjectId(id)) }
+      })
       .toArray();
     
     const all = [...processed, ...updated];

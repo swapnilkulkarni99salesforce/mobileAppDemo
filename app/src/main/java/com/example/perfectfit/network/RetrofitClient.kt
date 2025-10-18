@@ -12,7 +12,9 @@ object RetrofitClient {
     // For local testing: Use your computer's IP (not localhost/127.0.0.1 from Android)
     // Example: http://192.168.1.100:3000/
     // For production: https://your-domain.com/
-    private const val BASE_URL = "http://10.0.2.2:3000/" // For Android emulator pointing to localhost
+    // For Android emulator: http://10.0.2.2:3000/
+    // For real device on same network: Use your backend server machine IP
+    private const val BASE_URL = "http://192.168.1.16:3000/" // Backend server IP address
     
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY

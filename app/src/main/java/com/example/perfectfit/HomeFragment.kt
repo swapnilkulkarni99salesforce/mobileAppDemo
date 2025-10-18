@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.perfectfit.database.AppDatabase
 import com.example.perfectfit.databinding.FragmentHomeBinding
+import com.example.perfectfit.models.Order
 import com.example.perfectfit.models.WorkloadConfig
 import com.example.perfectfit.sync.SyncRepository
 import com.example.perfectfit.utils.WorkloadHelper

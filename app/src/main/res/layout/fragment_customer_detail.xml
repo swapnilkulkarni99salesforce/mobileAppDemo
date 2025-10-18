@@ -55,6 +55,7 @@
                     android:layout_height="70dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_person_avatar"
+                    android:tint="@color/white"
                     android:contentDescription="Customer Avatar" />
                     
             </FrameLayout>
@@ -104,6 +105,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_person"
+                        android:tint="?attr/colorPrimary"
                         android:contentDescription="Person Icon" />
 
                     <TextView
@@ -197,6 +199,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_phone"
+                        android:tint="?attr/colorPrimary"
                         android:contentDescription="Phone Icon" />
 
                     <TextView
@@ -293,6 +296,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_location"
+                        android:tint="?attr/colorPrimary"
                         android:contentDescription="Location Icon" />
 
                     <TextView

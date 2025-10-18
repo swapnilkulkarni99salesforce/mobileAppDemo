@@ -55,6 +55,7 @@
                     android:layout_height="70dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_order_avatar"
+                    android:tint="@color/white"
                     android:contentDescription="Order Avatar" />
                     
             </FrameLayout>
@@ -104,6 +105,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_person"
+                        android:tint="?attr/colorPrimary"
                         android:contentDescription="Person Icon" />
 
                     <TextView
@@ -174,6 +176,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_receipt"
+                        android:tint="?attr/colorPrimary"
                         android:contentDescription="Receipt Icon" />
 
                     <TextView

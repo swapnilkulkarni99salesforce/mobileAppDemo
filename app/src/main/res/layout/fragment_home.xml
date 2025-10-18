@@ -90,11 +90,12 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_sparkle"
-                        android:contentDescription="Sparkle Icon" />
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_sparkle"
+                    android:tint="#FFD700"
+                    android:contentDescription="Sparkle Icon" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -124,6 +125,7 @@
                     android:layout_height="32dp"
                     android:layout_marginTop="8dp"
                     android:src="@drawable/ic_quote"
+                    android:tint="#A6274A"
                     android:alpha="0.3"
                     android:layout_gravity="end"
                     android:contentDescription="Quote Icon" />
@@ -197,12 +199,13 @@
                         android:gravity="center"
                         android:elevation="2dp">
 
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:src="@drawable/ic_customers_filled"
-                            android:layout_marginBottom="8dp"
-                            android:contentDescription="Customers Icon" />
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_customers_filled"
+                        android:tint="?attr/colorPrimary"
+                        android:layout_marginBottom="8dp"
+                        android:contentDescription="Customers Icon" />
 
                         <TextView
                             android:id="@+id/total_customers_count"
@@ -235,12 +238,13 @@
                         android:gravity="center"
                         android:elevation="2dp">
 
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:src="@drawable/ic_orders_filled"
-                            android:layout_marginBottom="8dp"
-                            android:contentDescription="Orders Icon" />
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_orders_filled"
+                        android:tint="?attr/colorPrimary"
+                        android:layout_marginBottom="8dp"
+                        android:contentDescription="Orders Icon" />
 
                         <TextView
                             android:id="@+id/total_orders_count"
@@ -283,12 +287,13 @@
                         android:gravity="center"
                         android:elevation="2dp">
 
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:src="@drawable/ic_pending"
-                            android:layout_marginBottom="8dp"
-                            android:contentDescription="Pending Icon" />
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_pending"
+                        android:tint="#FF9800"
+                        android:layout_marginBottom="8dp"
+                        android:contentDescription="Pending Icon" />
 
                         <TextView
                             android:id="@+id/pending_orders_count"
@@ -321,12 +326,13 @@
                         android:gravity="center"
                         android:elevation="2dp">
 
-                        <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:src="@drawable/ic_completed"
-                            android:layout_marginBottom="8dp"
-                            android:contentDescription="Completed Icon" />
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_completed"
+                        android:tint="#4CAF50"
+                        android:layout_marginBottom="8dp"
+                        android:contentDescription="Completed Icon" />
 
                         <TextView
                             android:id="@+id/completed_orders_count"

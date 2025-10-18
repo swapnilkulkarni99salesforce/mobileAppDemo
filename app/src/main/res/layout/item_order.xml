@@ -92,7 +92,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/ic_person"
-                android:alpha="0.7"
+                android:tint="?attr/colorPrimary"
                 android:contentDescription="Person Icon" />
 
             <TextView
@@ -119,7 +119,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/ic_calendar"
-                android:alpha="0.7"
+                android:tint="?attr/colorPrimary"
                 android:contentDescription="Calendar Icon" />
 
             <TextView
@@ -145,7 +145,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:src="@drawable/ic_calendar"
-                android:alpha="0.7"
+                android:tint="?attr/colorPrimary"
                 android:contentDescription="Calendar Icon" />
 
             <TextView

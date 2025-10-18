@@ -68,6 +68,7 @@ class HomeFragment : Fragment() {
         loadDashboardStatistics()
         loadWorkloadStatus()
         loadDeliveryAlerts()
+        loadFinancialDashboard()
     }
     
     private fun setupGreetingAndQuote() {
@@ -119,6 +120,10 @@ class HomeFragment : Fragment() {
         
         binding.viewAllOrdersButton.setOnClickListener {
             navigateToOrders()
+        }
+        
+        binding.viewPendingPaymentsButton.setOnClickListener {
+            navigateToPendingPayments()
         }
     }
     
@@ -327,6 +332,76 @@ class HomeFragment : Fragment() {
             .addToBackStack(null)
             .commit()
     }
+    
+    private fun navigateToPendingPayments() {
+        // Navigate to orders fragment filtered by unpaid/partial status
+        (activity as? MainActivity)?.let {
+            it.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, OrdersFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+    
+    private fun loadFinancialDashboard() {
+        lifecycleScope.launch {
+            try {
+                val allOrders = database.orderDao().getAllOrders()
+                
+                // Calculate today's revenue (fully paid orders today)
+                val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+                val today = dateFormat.format(java.util.Date())
+                
+                val todayRevenue = allOrders
+                    .filter { it.paymentDate == today && it.paymentStatus == Order.PAYMENT_PAID }
+                    .sumOf { it.amount }
+                
+                // Calculate this month's revenue
+                val calendar = java.util.Calendar.getInstance()
+                val currentMonth = calendar.get(java.util.Calendar.MONTH)
+                val currentYear = calendar.get(java.util.Calendar.YEAR)
+                
+                val monthRevenue = allOrders
+                    .filter { order ->
+                        order.paymentStatus == Order.PAYMENT_PAID &&
+                        order.paymentDate?.let { date ->
+                            try {
+                                val paymentCal = java.util.Calendar.getInstance()
+                                paymentCal.time = dateFormat.parse(date) ?: return@let false
+                                paymentCal.get(java.util.Calendar.MONTH) == currentMonth &&
+                                paymentCal.get(java.util.Calendar.YEAR) == currentYear
+                            } catch (e: Exception) {
+                                false
+                            }
+                        } ?: false
+                    }
+                    .sumOf { it.amount }
+                
+                // Calculate outstanding payments
+                val outstandingOrders = allOrders.filter { 
+                    it.paymentStatus != Order.PAYMENT_PAID 
+                }
+                val totalOutstanding = outstandingOrders.sumOf { it.outstandingAmount }
+                
+                // Update UI
+                binding.todayRevenue.text = "₹${String.format("%.2f", todayRevenue)}"
+                binding.monthRevenue.text = "₹${String.format("%.2f", monthRevenue)}"
+                binding.outstandingAmount.text = "₹${String.format("%.2f", totalOutstanding)}"
+                binding.pendingPaymentCount.text = "${outstandingOrders.size} orders"
+                
+                // Show/hide financial card based on data
+                if (allOrders.isEmpty()) {
+                    binding.financialDashboardCard.visibility = View.GONE
+                } else {
+                    binding.financialDashboardCard.visibility = View.VISIBLE
+                }
+                
+            } catch (e: Exception) {
+                // Hide on error
+                binding.financialDashboardCard.visibility = View.GONE
+            }
+        }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -337,6 +412,8 @@ class HomeFragment : Fragment() {
         // Refresh workload status
         loadWorkloadStatus()
         loadDeliveryAlerts()
+        // Refresh financial dashboard
+        loadFinancialDashboard()
     }
 
     override fun onDestroyView() {

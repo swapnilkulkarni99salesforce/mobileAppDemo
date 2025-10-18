@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.perfectfit.databinding.ActivityMainBinding
+import com.example.perfectfit.utils.NotificationHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -15,6 +16,9 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        
+        // Initialize notification channels
+        NotificationHelper.createNotificationChannels(this)
 
         // Setup toolbar with logo only
         setSupportActionBar(binding.toolbar)

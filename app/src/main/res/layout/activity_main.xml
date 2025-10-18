@@ -13,14 +13,23 @@
         android:background="@drawable/gradient_toolbar"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-        app:logo="@drawable/logo_small"
-        app:contentInsetStart="16dp"
-        app:contentInsetStartWithNavigation="16dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
         app:titleTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+        app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light">
+        
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/logo_small"
+            android:scaleType="fitCenter"
+            android:contentDescription="App Logo" />
+            
+    </com.google.android.material.appbar.MaterialToolbar>
 
     <FrameLayout
         android:id="@+id/fragment_container"

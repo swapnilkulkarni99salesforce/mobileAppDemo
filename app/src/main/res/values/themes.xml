@@ -11,7 +11,7 @@
         <item name="colorSecondaryVariant">@color/deep_navy</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">@color/rose_gold_dark</item>
+        <item name="android:statusBarColor" tools:targetApi="l">#A6274A</item>
         <!-- Background colors -->
         <item name="android:windowBackground">@color/background_light</item>
         <item name="colorSurface">@color/surface_light</item>

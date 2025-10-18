@@ -25,26 +25,33 @@ let ordersCollection;
 let measurementsCollection;
 
 // Connect to MongoDB
-MongoClient.connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-  .then(client => {
-    console.log('Connected to MongoDB');
+async function connectToDatabase() {
+  try {
+    const client = await MongoClient.connect(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    
+    console.log('✅ Connected to MongoDB');
     db = client.db(DB_NAME);
     customersCollection = db.collection('customers');
     ordersCollection = db.collection('orders');
     measurementsCollection = db.collection('measurements');
     
     // Create indexes for better performance
-    customersCollection.createIndex({ lastModified: -1 });
-    customersCollection.createIndex({ mobile: 1 });
-    ordersCollection.createIndex({ lastModified: -1 });
-    ordersCollection.createIndex({ customerId: 1 });
-    measurementsCollection.createIndex({ lastModified: -1 });
-    measurementsCollection.createIndex({ customerId: 1 });
-  })
-  .catch(error => console.error('MongoDB connection error:', error));
+    await customersCollection.createIndex({ lastModified: -1 });
+    await customersCollection.createIndex({ mobile: 1 });
+    await ordersCollection.createIndex({ lastModified: -1 });
+    await ordersCollection.createIndex({ customerId: 1 });
+    await measurementsCollection.createIndex({ lastModified: -1 });
+    await measurementsCollection.createIndex({ customerId: 1 });
+    
+    console.log('✅ Database indexes created');
+  } catch (error) {
+    console.error('❌ MongoDB connection error:', error);
+    process.exit(1); // Exit if can't connect to database
+  }
+}
 
 // ============= HEALTH CHECK =============
 app.get('/api/health', (req, res) => {
@@ -377,11 +384,17 @@ function formatMeasurement(measurement) {
   };
 }
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
-  console.log(`📡 API endpoint: http://localhost:${PORT}/api`);
-  console.log(`🗄️  MongoDB: ${MONGODB_URI}`);
-  console.log(`📊 Database: ${DB_NAME}`);
-});
+// Start server after database connection
+async function startServer() {
+  await connectToDatabase();
+  
+  app.listen(PORT, () => {
+    console.log(`✅ Server running on port ${PORT}`);
+    console.log(`📡 API endpoint: http://localhost:${PORT}/api`);
+    console.log(`🗄️  MongoDB: ${MONGODB_URI}`);
+    console.log(`📊 Database: ${DB_NAME}`);
+  });
+}
+
+startServer();
 

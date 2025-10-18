@@ -13,6 +13,7 @@ import com.example.perfectfit.database.AppDatabase
 import com.example.perfectfit.databinding.FragmentCreateOrderBinding
 import com.example.perfectfit.models.Customer
 import com.example.perfectfit.models.Order
+import com.example.perfectfit.models.WorkloadConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -58,6 +59,7 @@ class CreateOrderFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         setupListeners()
+        calculateAndSetEstimatedDeliveryDate()
     }
 
     private fun setupViews() {
@@ -136,6 +138,69 @@ class CreateOrderFragment : Fragment() {
             binding.deliveryInfoText.text = "Your estimated delivery date is in $daysUntilDelivery days on $deliveryDateStr"
             binding.deliveryInfoText.visibility = View.VISIBLE
         }
+    }
+
+    private fun calculateAndSetEstimatedDeliveryDate() {
+        lifecycleScope.launch {
+            try {
+                val config = withContext(Dispatchers.IO) {
+                    database.workloadConfigDao().getConfig() ?: WorkloadConfig()
+                }
+                
+                val pendingOrders = withContext(Dispatchers.IO) {
+                    database.orderDao().getAllOrders().filter { 
+                        it.status.equals("Pending", ignoreCase = true) || 
+                        it.status.equals("In Progress", ignoreCase = true)
+                    }
+                }
+                
+                val estimatedDate = calculateDeliveryDate(pendingOrders.size, config)
+                selectedDeliveryDate = estimatedDate
+                
+                withContext(Dispatchers.Main) {
+                    updateDeliveryDate()
+                }
+            } catch (e: Exception) {
+                // If calculation fails, don't populate the date
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Could not auto-calculate delivery date",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun calculateDeliveryDate(pendingOrdersCount: Int, config: WorkloadConfig): Calendar {
+        // Calculate total hours needed for all pending orders + this new order
+        val totalOrdersToComplete = pendingOrdersCount + 1
+        val totalHoursNeeded = totalOrdersToComplete * config.timePerOrderHours
+        
+        val currentDate = Calendar.getInstance()
+        var hoursRemaining = totalHoursNeeded
+        var daysChecked = 0
+        val maxDaysToCheck = 365 // Safety limit
+        
+        // Start from today and add working hours day by day
+        while (hoursRemaining > 0 && daysChecked < maxDaysToCheck) {
+            val dayOfWeek = currentDate.get(Calendar.DAY_OF_WEEK)
+            val workingHoursToday = config.getHoursForDay(dayOfWeek)
+            
+            // Deduct the working hours for this day
+            hoursRemaining -= workingHoursToday
+            
+            // If we still have hours remaining, move to the next day
+            if (hoursRemaining > 0) {
+                currentDate.add(Calendar.DAY_OF_MONTH, 1)
+            }
+            
+            daysChecked++
+        }
+        
+        // If we've exhausted the working hours or reached the limit, return the calculated date
+        return currentDate
     }
 
     private fun saveOrder() {

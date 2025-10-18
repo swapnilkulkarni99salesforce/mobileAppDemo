@@ -92,6 +92,10 @@ class HomeFragment : Fragment() {
             navigateToRegisterCustomer()
         }
         
+        binding.workloadConfigButton.setOnClickListener {
+            navigateToWorkloadConfig()
+        }
+        
         binding.syncNowButton.setOnClickListener {
             performSync()
         }
@@ -142,6 +146,14 @@ class HomeFragment : Fragment() {
         val registerFragment = RegisterCustomerFragment()
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, registerFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun navigateToWorkloadConfig() {
+        val workloadConfigFragment = WorkloadConfigFragment()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, workloadConfigFragment)
             .addToBackStack(null)
             .commit()
     }

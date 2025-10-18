@@ -422,6 +422,24 @@
                     app:iconTint="@color/white"
                     style="@style/Widget.MaterialComponents.Button" />
 
+                <!-- Workload Configuration Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/workload_config_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="⚙️ Workload Configuration"
+                    android:textSize="16sp"
+                    android:padding="16dp"
+                    android:textColor="#1A5F7A"
+                    app:strokeColor="#1A5F7A"
+                    app:strokeWidth="2dp"
+                    app:cornerRadius="12dp"
+                    app:icon="@android:drawable/ic_menu_manage"
+                    app:iconGravity="textStart"
+                    app:iconTint="#1A5F7A"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
                 <!-- Sync Button -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/sync_now_button"

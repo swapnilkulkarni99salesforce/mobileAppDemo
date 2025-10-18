@@ -16,9 +16,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Setup toolbar
+        // Setup toolbar with logo only
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.title = "Perfect Fit"
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         // Setup bottom navigation
         val bottomNavigation = binding.bottomNavigation

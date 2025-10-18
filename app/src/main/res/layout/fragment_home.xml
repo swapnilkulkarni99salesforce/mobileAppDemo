@@ -25,34 +25,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:elevation="4dp">
 
-            <!-- Logo and App Name -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
-
-                <ImageView
-                    android:id="@+id/app_logo"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/logo_small"
-                    android:contentDescription="App Logo"
-                    android:scaleType="fitCenter" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:text="Perfect Fit"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:fontFamily="sans-serif-medium" />
-
-            </LinearLayout>
-
             <!-- Time-based Greeting -->
             <TextView
                 android:id="@+id/greeting_text"

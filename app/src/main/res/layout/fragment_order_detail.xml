@@ -13,40 +13,66 @@
         android:layout_height="wrap_content">
 
         <!-- Header Section with Gradient -->
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/header_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/gradient_header"
-            android:orientation="vertical"
-            android:padding="24dp"
-            android:gravity="center"
             android:elevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <!-- Decorative Pattern -->
             <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@drawable/ic_receipt"
-                android:background="@drawable/stat_card_bg"
-                android:padding="20dp"
-                android:elevation="4dp"
-                android:contentDescription="Receipt Icon" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/decorative_pattern"
+                android:scaleType="centerCrop"
+                android:alpha="0.3"
+                android:contentDescription="Decorative Pattern" />
 
-            <TextView
-                android:id="@+id/order_id_text"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Order #12345"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:textAlignment="center" />
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:gravity="center">
 
-        </LinearLayout>
+                <FrameLayout
+                    android:layout_width="100dp"
+                    android:layout_height="100dp">
+                
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/avatar_frame"
+                    android:contentDescription="Avatar Frame" />
+                
+                <ImageView
+                    android:id="@+id/order_avatar"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_order_avatar"
+                    android:contentDescription="Order Avatar" />
+                    
+            </FrameLayout>
+
+                <TextView
+                    android:id="@+id/order_id_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Order #12345"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+        </FrameLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/customer_info_card"

@@ -22,12 +22,11 @@
             android:gravity="center_vertical">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_receipt"
-                android:padding="8dp"
-                android:background="@drawable/stat_card_bg"
-                android:contentDescription="Receipt Icon" />
+                android:id="@+id/order_avatar"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/order_avatar_placeholder"
+                android:contentDescription="Order Avatar" />
 
             <LinearLayout
                 android:layout_width="0dp"

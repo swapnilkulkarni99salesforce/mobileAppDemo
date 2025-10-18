@@ -136,6 +136,29 @@ curl -X POST http://localhost:3000/api/customers \
 6. Copy the connection string and paste in `.env` file
 7. Replace `<password>` with your database user password
 
+## Maintenance
+
+### Clean Up Duplicate Records
+
+If you have duplicate records in your MongoDB database from previous sync issues, use the cleanup script:
+
+```bash
+node cleanup-duplicates.js
+```
+
+**What it does:**
+- Identifies duplicate records in customers, orders, and measurements collections
+- Keeps the most recent version (based on `lastModified` timestamp)
+- Removes older duplicates
+- Shows a detailed report of what was cleaned up
+
+**Duplicate Detection:**
+- **Customers**: Same mobile number
+- **Orders**: Same customerId + orderDate + orderType
+- **Measurements**: Same customerId (one measurement per customer)
+
+⚠️ **Important**: Always backup your database before running cleanup operations!
+
 ## Database Structure
 
 The API automatically creates these collections:

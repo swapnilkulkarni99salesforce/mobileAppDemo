@@ -116,27 +116,46 @@ class SyncManager(private val context: Context) {
     private suspend fun processCustomerSyncResponse(apiCustomers: List<ApiCustomer>) {
         for (apiCustomer in apiCustomers) {
             try {
+                // Check if this record exists locally by localId
                 val localCustomer = apiCustomer.localId?.let {
                     database.customerDao().getCustomerById(it)
                 }
                 
-                if (localCustomer != null && apiCustomer.id != null) {
-                    // Update local record with server ID
-                    database.customerDao().updateServerInfo(
-                        localId = localCustomer.id,
-                        serverId = apiCustomer.id,
-                        status = Customer.SYNC_SYNCED,
-                        timestamp = System.currentTimeMillis()
-                    )
-                } else if (apiCustomer.id != null) {
-                    // New customer from server - insert locally
-                    val customer = apiCustomer.toRoomModel()
-                    database.customerDao().insertCustomer(customer)
+                // Check if this record exists locally by serverId
+                val existingByServerId = apiCustomer.id?.let {
+                    database.customerDao().getCustomerByServerId(it)
                 }
                 
-                Log.d(TAG, "Processed customer: ${apiCustomer.firstName} ${apiCustomer.lastName}")
+                when {
+                    // Case 1: Found by localId - update with server info
+                    localCustomer != null && apiCustomer.id != null -> {
+                        database.customerDao().updateServerInfo(
+                            localId = localCustomer.id,
+                            serverId = apiCustomer.id,
+                            status = Customer.SYNC_SYNCED,
+                            timestamp = System.currentTimeMillis()
+                        )
+                        Log.d(TAG, "Updated customer localId=${localCustomer.id} with serverId=${apiCustomer.id}")
+                    }
+                    // Case 2: Found by serverId but not localId - this is an update from server
+                    existingByServerId != null && apiCustomer.id != null -> {
+                        // Update existing record
+                        val updatedCustomer = apiCustomer.toRoomModel().copy(id = existingByServerId.id)
+                        database.customerDao().updateCustomer(updatedCustomer)
+                        Log.d(TAG, "Updated existing customer with serverId=${apiCustomer.id}")
+                    }
+                    // Case 3: New customer from server - insert only if not already exists
+                    apiCustomer.id != null && existingByServerId == null -> {
+                        val customer = apiCustomer.toRoomModel()
+                        database.customerDao().insertCustomer(customer)
+                        Log.d(TAG, "Inserted new customer from server: ${apiCustomer.firstName} ${apiCustomer.lastName}")
+                    }
+                    else -> {
+                        Log.w(TAG, "Skipped customer - no valid ID: ${apiCustomer.firstName} ${apiCustomer.lastName}")
+                    }
+                }
             } catch (e: Exception) {
-                Log.e(TAG, "Error processing customer: ${e.message}")
+                Log.e(TAG, "Error processing customer: ${e.message}", e)
             }
         }
     }
@@ -147,27 +166,46 @@ class SyncManager(private val context: Context) {
     private suspend fun processOrderSyncResponse(apiOrders: List<ApiOrder>) {
         for (apiOrder in apiOrders) {
             try {
+                // Check if this record exists locally by localId
                 val localOrder = apiOrder.localId?.let {
                     database.orderDao().getOrderById(it)
                 }
                 
-                if (localOrder != null && apiOrder.id != null) {
-                    // Update local record with server ID
-                    database.orderDao().updateServerInfo(
-                        localId = localOrder.id,
-                        serverId = apiOrder.id,
-                        status = Order.SYNC_SYNCED,
-                        timestamp = System.currentTimeMillis()
-                    )
-                } else if (apiOrder.id != null) {
-                    // New order from server - insert locally
-                    val order = apiOrder.toRoomModel()
-                    database.orderDao().insert(order)
+                // Check if this record exists locally by serverId
+                val existingByServerId = apiOrder.id?.let {
+                    database.orderDao().getOrderByServerId(it)
                 }
                 
-                Log.d(TAG, "Processed order: ${apiOrder.id}")
+                when {
+                    // Case 1: Found by localId - update with server info
+                    localOrder != null && apiOrder.id != null -> {
+                        database.orderDao().updateServerInfo(
+                            localId = localOrder.id,
+                            serverId = apiOrder.id,
+                            status = Order.SYNC_SYNCED,
+                            timestamp = System.currentTimeMillis()
+                        )
+                        Log.d(TAG, "Updated order localId=${localOrder.id} with serverId=${apiOrder.id}")
+                    }
+                    // Case 2: Found by serverId but not localId - this is an update from server
+                    existingByServerId != null && apiOrder.id != null -> {
+                        // Update existing record
+                        val updatedOrder = apiOrder.toRoomModel().copy(id = existingByServerId.id)
+                        database.orderDao().update(updatedOrder)
+                        Log.d(TAG, "Updated existing order with serverId=${apiOrder.id}")
+                    }
+                    // Case 3: New order from server - insert only if not already exists
+                    apiOrder.id != null && existingByServerId == null -> {
+                        val order = apiOrder.toRoomModel()
+                        database.orderDao().insert(order)
+                        Log.d(TAG, "Inserted new order from server: ${apiOrder.id}")
+                    }
+                    else -> {
+                        Log.w(TAG, "Skipped order - no valid ID: ${apiOrder.id}")
+                    }
+                }
             } catch (e: Exception) {
-                Log.e(TAG, "Error processing order: ${e.message}")
+                Log.e(TAG, "Error processing order: ${e.message}", e)
             }
         }
     }
@@ -178,27 +216,46 @@ class SyncManager(private val context: Context) {
     private suspend fun processMeasurementSyncResponse(apiMeasurements: List<ApiMeasurement>) {
         for (apiMeasurement in apiMeasurements) {
             try {
+                // Check if this record exists locally by localId (using customerId for measurements)
                 val localMeasurement = apiMeasurement.localId?.let {
                     database.measurementDao().getMeasurementByCustomerIdSync(it)
                 }
                 
-                if (localMeasurement != null && apiMeasurement.id != null) {
-                    // Update local record with server ID
-                    database.measurementDao().updateServerInfo(
-                        localId = localMeasurement.id,
-                        serverId = apiMeasurement.id,
-                        status = Measurement.SYNC_SYNCED,
-                        timestamp = System.currentTimeMillis()
-                    )
-                } else if (apiMeasurement.id != null) {
-                    // New measurement from server - insert locally
-                    val measurement = apiMeasurement.toRoomModel()
-                    database.measurementDao().insertMeasurement(measurement)
+                // Check if this record exists locally by serverId
+                val existingByServerId = apiMeasurement.id?.let {
+                    database.measurementDao().getMeasurementByServerId(it)
                 }
                 
-                Log.d(TAG, "Processed measurement: ${apiMeasurement.id}")
+                when {
+                    // Case 1: Found by localId - update with server info
+                    localMeasurement != null && apiMeasurement.id != null -> {
+                        database.measurementDao().updateServerInfo(
+                            localId = localMeasurement.id,
+                            serverId = apiMeasurement.id,
+                            status = Measurement.SYNC_SYNCED,
+                            timestamp = System.currentTimeMillis()
+                        )
+                        Log.d(TAG, "Updated measurement localId=${localMeasurement.id} with serverId=${apiMeasurement.id}")
+                    }
+                    // Case 2: Found by serverId but not localId - this is an update from server
+                    existingByServerId != null && apiMeasurement.id != null -> {
+                        // Update existing record
+                        val updatedMeasurement = apiMeasurement.toRoomModel().copy(id = existingByServerId.id)
+                        database.measurementDao().updateMeasurement(updatedMeasurement)
+                        Log.d(TAG, "Updated existing measurement with serverId=${apiMeasurement.id}")
+                    }
+                    // Case 3: New measurement from server - insert only if not already exists
+                    apiMeasurement.id != null && existingByServerId == null -> {
+                        val measurement = apiMeasurement.toRoomModel()
+                        database.measurementDao().insertMeasurement(measurement)
+                        Log.d(TAG, "Inserted new measurement from server: ${apiMeasurement.id}")
+                    }
+                    else -> {
+                        Log.w(TAG, "Skipped measurement - no valid ID: ${apiMeasurement.id}")
+                    }
+                }
             } catch (e: Exception) {
-                Log.e(TAG, "Error processing measurement: ${e.message}")
+                Log.e(TAG, "Error processing measurement: ${e.message}", e)
             }
         }
     }

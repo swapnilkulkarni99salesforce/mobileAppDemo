@@ -4,12 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.perfectfit.database.AppDatabase
 import com.example.perfectfit.databinding.FragmentHomeBinding
+import com.example.perfectfit.models.WorkloadConfig
 import com.example.perfectfit.sync.SyncRepository
+import com.example.perfectfit.utils.WorkloadHelper
+import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
@@ -61,6 +66,8 @@ class HomeFragment : Fragment() {
         setupSyncUI()
         observeSyncStatus()
         loadDashboardStatistics()
+        loadWorkloadStatus()
+        loadDeliveryAlerts()
     }
     
     private fun setupGreetingAndQuote() {
@@ -108,6 +115,21 @@ class HomeFragment : Fragment() {
                 syncRepository.disableBackgroundSync()
                 Toast.makeText(requireContext(), "Auto-sync disabled", Toast.LENGTH_SHORT).show()
             }
+        }
+        
+        binding.viewAllOrdersButton.setOnClickListener {
+            navigateToOrders()
+        }
+    }
+    
+    private fun navigateToOrders() {
+        // Switch to orders tab (assuming bottom navigation)
+        (activity as? MainActivity)?.let {
+            // Navigate to orders fragment
+            it.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, OrdersFragment())
+                .addToBackStack(null)
+                .commit()
         }
     }
 
@@ -194,12 +216,132 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun loadWorkloadStatus() {
+        lifecycleScope.launch {
+            try {
+                val config = database.workloadConfigDao().getConfig() ?: WorkloadConfig()
+                val pendingOrders = database.orderDao().getAllOrders().filter { 
+                    it.status.equals("Pending", ignoreCase = true) || 
+                    it.status.equals("In Progress", ignoreCase = true)
+                }
+                
+                if (pendingOrders.isEmpty()) {
+                    // Hide workload card if no pending orders
+                    binding.workloadStatusCard.visibility = View.GONE
+                    return@launch
+                }
+                
+                val status = WorkloadHelper.calculateWorkloadStatus(pendingOrders, config)
+                
+                // Show the card
+                binding.workloadStatusCard.visibility = View.VISIBLE
+                
+                // Update UI
+                binding.workloadStatusEmoji.text = WorkloadHelper.getStatusEmoji(status.statusLevel)
+                binding.workloadPercentage.text = "${status.utilizationPercentage}%"
+                binding.workloadProgressBar.progress = status.utilizationPercentage
+                binding.workloadMessage.text = status.message
+                binding.workloadHours.text = String.format("%.1fh", status.totalHoursNeeded)
+                
+                if (status.recommendedCapacity > 0) {
+                    binding.workloadCapacity.text = "+${status.recommendedCapacity}"
+                    binding.workloadCapacity.setTextColor(
+                        ContextCompat.getColor(requireContext(), android.R.color.holo_green_dark)
+                    )
+                } else {
+                    binding.workloadCapacity.text = "Full"
+                    binding.workloadCapacity.setTextColor(
+                        ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark)
+                    )
+                }
+                
+                // Update progress bar color based on status
+                val progressColor = when (status.statusLevel) {
+                    WorkloadHelper.StatusLevel.AVAILABLE -> android.R.color.holo_green_light
+                    WorkloadHelper.StatusLevel.BUSY -> android.R.color.holo_orange_light
+                    WorkloadHelper.StatusLevel.OVERBOOKED -> android.R.color.holo_red_light
+                }
+                binding.workloadProgressBar.progressTintList = 
+                    ContextCompat.getColorStateList(requireContext(), progressColor)
+                    
+            } catch (e: Exception) {
+                // Hide on error
+                binding.workloadStatusCard.visibility = View.GONE
+            }
+        }
+    }
+    
+    private fun loadDeliveryAlerts() {
+        lifecycleScope.launch {
+            try {
+                val pendingOrders = database.orderDao().getAllOrders().filter { 
+                    it.status.equals("Pending", ignoreCase = true) || 
+                    it.status.equals("In Progress", ignoreCase = true)
+                }
+                
+                val alerts = WorkloadHelper.getDeliveryAlerts(pendingOrders)
+                
+                if (alerts.isEmpty()) {
+                    binding.deliveryAlertsCard.visibility = View.GONE
+                    return@launch
+                }
+                
+                // Show the card
+                binding.deliveryAlertsCard.visibility = View.VISIBLE
+                
+                // Clear existing alerts
+                binding.deliveryAlertsContainer.removeAllViews()
+                
+                // Add alert items (max 5)
+                alerts.take(5).forEach { alert ->
+                    val alertView = TextView(requireContext()).apply {
+                        text = WorkloadHelper.formatDeliveryAlertMessage(alert)
+                        textSize = 14f
+                        setPadding(0, 8, 0, 8)
+                        
+                        val textColor = when (alert.alertLevel) {
+                            WorkloadHelper.AlertLevel.URGENT -> android.R.color.holo_red_dark
+                            WorkloadHelper.AlertLevel.WARNING -> android.R.color.holo_orange_dark
+                            WorkloadHelper.AlertLevel.UPCOMING -> android.R.color.holo_blue_dark
+                        }
+                        setTextColor(ContextCompat.getColor(requireContext(), textColor))
+                        
+                        // Make clickable to view order details
+                        setOnClickListener {
+                            navigateToOrderDetail(alert.order.id)
+                        }
+                    }
+                    binding.deliveryAlertsContainer.addView(alertView)
+                }
+                
+            } catch (e: Exception) {
+                binding.deliveryAlertsCard.visibility = View.GONE
+            }
+        }
+    }
+    
+    private fun navigateToOrderDetail(orderId: Int) {
+        lifecycleScope.launch {
+            val order = database.orderDao().getAllOrders().find { it.id == orderId }
+            order?.let {
+                val orderDetailFragment = OrderDetailFragment.newInstance(it)
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, orderDetailFragment)
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         // Refresh greeting and quote when returning to home
         setupGreetingAndQuote()
         // Refresh statistics when returning to home
         loadDashboardStatistics()
+        // Refresh workload status
+        loadWorkloadStatus()
+        loadDeliveryAlerts()
     }
 
     override fun onDestroyView() {

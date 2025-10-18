@@ -14,6 +14,7 @@ import com.example.perfectfit.databinding.FragmentCreateOrderBinding
 import com.example.perfectfit.models.Customer
 import com.example.perfectfit.models.Order
 import com.example.perfectfit.models.WorkloadConfig
+import com.example.perfectfit.utils.WorkloadHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -151,6 +152,36 @@ class CreateOrderFragment : Fragment() {
                     database.orderDao().getAllOrders().filter { 
                         it.status.equals("Pending", ignoreCase = true) || 
                         it.status.equals("In Progress", ignoreCase = true)
+                    }
+                }
+                
+                // Check workload status and show warning if overbooked
+                val status = WorkloadHelper.calculateWorkloadStatus(pendingOrders, config)
+                
+                withContext(Dispatchers.Main) {
+                    when (status.statusLevel) {
+                        WorkloadHelper.StatusLevel.OVERBOOKED -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "⚠️ WARNING: You're currently overbooked at ${status.utilizationPercentage}% capacity!",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        WorkloadHelper.StatusLevel.BUSY -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "⚠️ You're running at high capacity (${status.utilizationPercentage}%)",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        else -> {
+                            // Show positive message
+                            Toast.makeText(
+                                requireContext(),
+                                "✅ You have good capacity available",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
                 

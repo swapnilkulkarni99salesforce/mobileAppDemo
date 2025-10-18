@@ -2,16 +2,16 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.PerfectFit" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color - Rose Gold -->
-        <item name="colorPrimary">@color/rose_gold</item>
-        <item name="colorPrimaryVariant">@color/rose_gold_dark</item>
+        <!-- Primary brand color - Burgundy Wine -->
+        <item name="colorPrimary">@color/burgundy_primary</item>
+        <item name="colorPrimaryVariant">@color/burgundy_dark</item>
         <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color - Sage Green -->
-        <item name="colorSecondary">@color/sage_green</item>
-        <item name="colorSecondaryVariant">@color/deep_navy</item>
+        <!-- Secondary brand color - Burgundy Accent -->
+        <item name="colorSecondary">@color/burgundy_accent</item>
+        <item name="colorSecondaryVariant">@color/burgundy_dark</item>
         <item name="colorOnSecondary">@color/white</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">#A6274A</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/burgundy_primary</item>
         <!-- Background colors -->
         <item name="android:windowBackground">@color/background_light</item>
         <item name="colorSurface">@color/surface_light</item>

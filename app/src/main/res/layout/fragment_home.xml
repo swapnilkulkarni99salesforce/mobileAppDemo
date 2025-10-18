@@ -88,7 +88,7 @@
                         android:text="Daily Inspiration"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:textColor="#B76E79"
+                        android:textColor="#A6274A"
                         android:letterSpacing="0.05" />
 
                 </LinearLayout>
@@ -379,7 +379,7 @@
                         android:text="Quick Actions"
                         android:textSize="22sp"
                         android:textStyle="bold"
-                        android:textColor="#B76E79"
+                        android:textColor="#A6274A"
                         android:letterSpacing="0.02" />
 
                 </LinearLayout>
@@ -394,7 +394,7 @@
                     android:textSize="16sp"
                     android:padding="16dp"
                     android:textColor="@color/white"
-                    app:backgroundTint="#B76E79"
+                    app:backgroundTint="#A6274A"
                     app:cornerRadius="12dp"
                     app:icon="@android:drawable/ic_input_add"
                     app:iconGravity="textStart"
@@ -410,13 +410,13 @@
                     android:text="☁️ Sync Now"
                     android:textSize="16sp"
                     android:padding="16dp"
-                    android:textColor="#B76E79"
-                    app:strokeColor="#B76E79"
+                    android:textColor="#A6274A"
+                    app:strokeColor="#A6274A"
                     app:strokeWidth="2dp"
                     app:cornerRadius="12dp"
                     app:icon="@android:drawable/stat_notify_sync"
                     app:iconGravity="textStart"
-                    app:iconTint="#B76E79"
+                    app:iconTint="#A6274A"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
                 <!-- Last Sync Info -->

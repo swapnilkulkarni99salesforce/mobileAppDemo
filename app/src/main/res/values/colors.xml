@@ -11,14 +11,20 @@
     <color name="status_bg">#FF4CAF50</color>
     <color name="ic_launcher_background">#6200EE</color>
     
-    <!-- Elegant Boutique Theme - Rose Gold Palette -->
-    <color name="rose_gold">#B76E79</color>
-    <color name="rose_gold_light">#D8A3AC</color>
-    <color name="rose_gold_dark">#8B4755</color>
+    <!-- Elegant Boutique Theme - Burgundy Wine Palette -->
+    <color name="burgundy_primary">#A6274A</color>
+    <color name="burgundy_light">#D64773</color>
+    <color name="burgundy_dark">#7A1D37</color>
+    <color name="burgundy_accent">#E85D87</color>
+    <color name="rose_gold">#A6274A</color>
+    <color name="rose_gold_light">#D64773</color>
+    <color name="rose_gold_dark">#7A1D37</color>
     <color name="sage_green">#9CAF88</color>
     <color name="sage_green_light">#C1D5B0</color>
     <color name="deep_navy">#2C3E50</color>
     <color name="deep_navy_dark">#1A252F</color>
+    <color name="soft_pink">#F8E8EC</color>
+    <color name="light_burgundy">#F4D9E0</color>
     
     <!-- Light Mode Colors -->
     <color name="surface_light">#FAFAFA</color>

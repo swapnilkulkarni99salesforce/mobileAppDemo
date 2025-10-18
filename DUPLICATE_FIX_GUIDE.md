@@ -65,6 +65,34 @@ when {
 }
 ```
 
+## Customer Unique Identification
+
+### Database Keys:
+- **Room (Android)**: `id` (auto-increment) + `serverId` (MongoDB _id)
+- **MongoDB**: `_id` (ObjectId primary key)
+
+### Business Unique Identifier:
+- **Composite Key**: `firstName` + `lastName` + `mobile`
+- MongoDB has a **unique composite index** on these three fields
+- Prevents exact duplicates while allowing:
+  - Family members to share the same mobile (different names)
+  - Different people with the same name (different mobiles)
+
+**Examples:**
+```
+✅ ALLOWED:
+  - Rahul Sharma (9876543210)
+  - Priya Sharma (9876543210)  // Different first name
+  - Rahul Sharma (9988776655)  // Different mobile
+
+❌ REJECTED:
+  - Rahul Sharma (9876543210)  // Exact duplicate
+```
+
+### Other Identifiers:
+- **Orders**: `customerId` + `orderDate` + `orderType` (composite uniqueness)
+- **Measurements**: `customerId` (one measurement record per customer)
+
 ## How to Apply the Fix
 
 ### Step 1: Restart Backend Server
@@ -95,7 +123,7 @@ node cleanup-duplicates.js
 ```
 
 This will:
-- ✅ Find duplicate customers (by mobile number)
+- ✅ Find duplicate customers (by firstName + lastName + mobile composite key)
 - ✅ Find duplicate orders (by customerId + orderDate + orderType)
 - ✅ Find duplicate measurements (by customerId)
 - ✅ Keep the most recent version
@@ -117,9 +145,18 @@ After clearing, sync again to get fresh data from the server.
 // Connect to MongoDB
 use perfectfit_db;
 
-// Check for duplicate customers (by mobile)
+// Check for duplicate customers (by composite key)
 db.customers.aggregate([
-  { $group: { _id: "$mobile", count: { $sum: 1 } } },
+  { 
+    $group: { 
+      _id: { 
+        firstName: "$firstName", 
+        lastName: "$lastName", 
+        mobile: "$mobile" 
+      }, 
+      count: { $sum: 1 } 
+    } 
+  },
   { $match: { count: { $gt: 1 } } }
 ]);
 

@@ -40,7 +40,12 @@ async function connectToDatabase() {
     
     // Create indexes for better performance
     await customersCollection.createIndex({ lastModified: -1 });
-    await customersCollection.createIndex({ mobile: 1 });
+    await customersCollection.createIndex({ mobile: 1 }); // Index for faster queries
+    // Composite unique key: firstName + lastName + mobile
+    await customersCollection.createIndex(
+      { firstName: 1, lastName: 1, mobile: 1 }, 
+      { unique: true }
+    );
     await ordersCollection.createIndex({ lastModified: -1 });
     await ordersCollection.createIndex({ customerId: 1 });
     await measurementsCollection.createIndex({ lastModified: -1 });

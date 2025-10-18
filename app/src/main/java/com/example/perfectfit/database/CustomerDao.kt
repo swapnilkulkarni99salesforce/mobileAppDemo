@@ -52,5 +52,8 @@ interface CustomerDao {
     
     @Query("SELECT * FROM customers ORDER BY firstName ASC")
     suspend fun getAllCustomersList(): List<Customer>
+    
+    @Query("SELECT * FROM customers WHERE firstName = :firstName AND lastName = :lastName AND mobile = :mobile LIMIT 1")
+    suspend fun getCustomerByCompositeKey(firstName: String, lastName: String, mobile: String): Customer?
 }
 

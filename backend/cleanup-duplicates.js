@@ -52,13 +52,17 @@ async function cleanupCustomerDuplicates(db) {
   console.log('\n🔍 Checking customers for duplicates...');
   const customersCollection = db.collection('customers');
   
-  // Find duplicates by mobile number (primary unique identifier)
+  // Find duplicates by composite key: firstName + lastName + mobile
   const pipeline = [
     {
       $group: {
-        _id: '$mobile',
+        _id: {
+          firstName: '$firstName',
+          lastName: '$lastName',
+          mobile: '$mobile'
+        },
         count: { $sum: 1 },
-        records: { $push: { id: '$_id', lastModified: '$lastModified', firstName: '$firstName', lastName: '$lastName' } }
+        records: { $push: { id: '$_id', lastModified: '$lastModified' } }
       }
     },
     {
@@ -85,7 +89,7 @@ async function cleanupCustomerDuplicates(db) {
     const keepRecord = dup.records[0];
     const removeRecords = dup.records.slice(1);
     
-    console.log(`  - Mobile: ${dup._id} (${dup.records[0].firstName} ${dup.records[0].lastName})`);
+    console.log(`  - Customer: ${dup._id.firstName} ${dup._id.lastName} (${dup._id.mobile})`);
     console.log(`    Keeping: ${keepRecord.id} (${new Date(keepRecord.lastModified).toLocaleString()})`);
     console.log(`    Removing ${removeRecords.length} duplicate(s)`);
     

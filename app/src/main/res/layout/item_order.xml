@@ -42,7 +42,7 @@
                     android:text="Order #12345"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@color/deep_navy" />
+                    android:textColor="@color/text_primary" />
 
                 <TextView
                     android:id="@+id/order_type"
@@ -103,7 +103,7 @@
                 android:layout_marginStart="8dp"
                 android:text="Customer: John Doe"
                 android:textSize="14sp"
-                android:textColor="@color/deep_navy" />
+                android:textColor="@color/text_primary" />
 
         </LinearLayout>
 
@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="Order Date: Oct 16, 2025"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
 
         </LinearLayout>
@@ -154,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="Delivery: Oct 23, 2025"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
 
         </LinearLayout>
@@ -176,7 +176,7 @@
                 android:text="Total Amount"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/darker_gray" />
+                android:textColor="@color/text_secondary" />
 
             <TextView
                 android:id="@+id/order_amount"

@@ -11,14 +11,28 @@
     <color name="status_bg">#FF4CAF50</color>
     <color name="ic_launcher_background">#6200EE</color>
     
-    <!-- Elegant Boutique Theme - Burgundy Wine Palette -->
-    <color name="burgundy_primary">#A6274A</color>
-    <color name="burgundy_light">#D64773</color>
-    <color name="burgundy_dark">#7A1D37</color>
-    <color name="burgundy_accent">#E85D87</color>
-    <color name="rose_gold">#A6274A</color>
-    <color name="rose_gold_light">#D64773</color>
-    <color name="rose_gold_dark">#7A1D37</color>
+    <!-- Modern Professional Theme - Enhanced Color Palette -->
+    <!-- Primary Colors - Deep Teal Blue -->
+    <color name="primary_gradient_start">#1A5F7A</color>
+    <color name="primary_gradient_end">#159895</color>
+    <color name="primary_dark">#0E3A4A</color>
+    <color name="primary_light">#57C5B6</color>
+    
+    <!-- Accent Colors - Vibrant Coral & Teal -->
+    <color name="accent_coral">#FF6B6B</color>
+    <color name="accent_teal">#4ECDC4</color>
+    <color name="accent_gold">#FFD93D</color>
+    
+    <!-- Legacy Burgundy Colors (for compatibility) -->
+    <color name="burgundy_primary">#1A5F7A</color>
+    <color name="burgundy_light">#57C5B6</color>
+    <color name="burgundy_dark">#0E3A4A</color>
+    <color name="burgundy_accent">#4ECDC4</color>
+    <color name="rose_gold">#1A5F7A</color>
+    <color name="rose_gold_light">#57C5B6</color>
+    <color name="rose_gold_dark">#0E3A4A</color>
+    
+    <!-- Supporting Colors -->
     <color name="sage_green">#9CAF88</color>
     <color name="sage_green_light">#C1D5B0</color>
     <color name="deep_navy">#2C3E50</color>
@@ -26,12 +40,17 @@
     <color name="soft_pink">#F8E8EC</color>
     <color name="light_burgundy">#F4D9E0</color>
     
-    <!-- Light Mode Colors -->
+    <!-- Light Mode Colors - Enhanced -->
     <color name="surface_light">#FAFAFA</color>
-    <color name="background_light">#F5F5F5</color>
+    <color name="background_light">#F0F4F8</color>
     <color name="card_light">#FFFFFF</color>
-    <color name="on_surface_light">#1C1B1F</color>
-    <color name="on_surface_variant_light">#49454F</color>
+    <color name="on_surface_light">#2D3748</color>
+    <color name="on_surface_variant_light">#4A5568</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#1A202C</color>
+    <color name="text_secondary">#4A5568</color>
+    <color name="text_hint">#A0AEC0</color>
     
     <!-- Dark Mode Colors -->
     <color name="surface_dark">#1C1B1F</color>

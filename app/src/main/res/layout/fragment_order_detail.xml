@@ -355,10 +355,10 @@
                     android:layout_marginTop="16dp"
                     android:text="✓ Update Status"
                     android:textSize="16sp"
-                    android:textColor="@color/white"
-                    android:padding="12dp"
-                    app:backgroundTint="#A6274A"
-                    app:cornerRadius="12dp"
+            android:textColor="@color/white"
+            android:padding="12dp"
+            app:backgroundTint="#1A5F7A"
+            app:cornerRadius="12dp"
                     style="@style/Widget.MaterialComponents.Button" />
 
             </LinearLayout>
@@ -430,9 +430,9 @@
             android:layout_marginTop="24dp"
             android:text="⬅️ Back to Orders"
             android:textSize="16sp"
-            android:textColor="#A6274A"
+            android:textColor="#1A5F7A"
             android:padding="16dp"
-            app:strokeColor="#A6274A"
+            app:strokeColor="#1A5F7A"
             app:strokeWidth="2dp"
             app:cornerRadius="12dp"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"

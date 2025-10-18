@@ -10,7 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@drawable/gradient_toolbar"
+        android:background="@color/primary_gradient_start"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         app:contentInsetStart="0dp"
@@ -21,13 +21,40 @@
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light">
         
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/logo_small"
-            android:scaleType="fitCenter"
-            android:contentDescription="App Logo" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Perfect Fit"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.02" />
+                
+            <View
+                android:layout_width="3dp"
+                android:layout_height="3dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/accent_teal"
+                android:rotation="45" />
+                
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tailoring"
+                android:textSize="14sp"
+                android:textColor="@color/accent_teal"
+                android:fontFamily="sans-serif-light"
+                android:letterSpacing="0.1" />
+        </LinearLayout>
             
     </com.google.android.material.appbar.MaterialToolbar>
 

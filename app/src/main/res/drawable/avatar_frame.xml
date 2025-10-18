@@ -17,8 +17,8 @@
         <shape android:shape="oval">
             <gradient
                 android:angle="135"
-                android:startColor="#A6274A"
-                android:endColor="#E85D87"
+                android:startColor="#1A5F7A"
+                android:endColor="#57C5B6"
                 android:type="linear" />
         </shape>
     </item>

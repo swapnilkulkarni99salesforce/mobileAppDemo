@@ -5,64 +5,190 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
+    android:background="@color/background_light"
     tools:context=".HomeFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/welcome_text"
-            android:layout_width="wrap_content"
+        <!-- HEADER WITH LOGO AND GREETING -->
+        <LinearLayout
+            android:id="@+id/header_section"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Welcome to Perfect Fit"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
+            android:background="@drawable/gradient_header"
+            android:orientation="vertical"
+            android:padding="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="24dp" />
+            android:elevation="4dp">
 
-        <TextView
-            android:id="@+id/subtitle_text"
-            android:layout_width="wrap_content"
+            <!-- Logo and App Name -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:id="@+id/app_logo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/logo_small"
+                    android:contentDescription="App Logo"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Perfect Fit"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:fontFamily="sans-serif-medium" />
+
+            </LinearLayout>
+
+            <!-- Time-based Greeting -->
+            <TextView
+                android:id="@+id/greeting_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Good Morning"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:fontFamily="sans-serif-light" />
+
+            <TextView
+                android:id="@+id/user_name_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Let's make today productive!"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:alpha="0.9"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+        <!-- MOTIVATIONAL QUOTE CARD -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/quote_card"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Your business management solution"
-            android:textSize="16sp"
-            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/welcome_text"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintTop_toBottomOf="@+id/header_section">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/quote_card_bg"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_sparkle"
+                        android:contentDescription="Sparkle Icon" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Daily Inspiration"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="#B76E79"
+                        android:letterSpacing="0.05" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/motivational_quote_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Success is the sum of small efforts repeated day in and day out."
+                    android:textSize="16sp"
+                    android:textColor="#2C3E50"
+                    android:lineSpacingMultiplier="1.3"
+                    android:fontFamily="serif" />
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_quote"
+                    android:alpha="0.3"
+                    android:layout_gravity="end"
+                    android:contentDescription="Quote Icon" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- DASHBOARD SECTION -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/dashboard_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="16dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="?attr/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/subtitle_text">
+            app:layout_constraintTop_toBottomOf="@+id/quote_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/gradient_dashboard_card"
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="📊 Dashboard"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/white" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📊"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Dashboard"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:letterSpacing="0.02" />
+
+                </LinearLayout>
 
                 <!-- Statistics Grid -->
                 <LinearLayout
@@ -78,10 +204,18 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:background="@android:color/white"
+                        android:background="@drawable/stat_card_bg"
                         android:padding="16dp"
                         android:layout_marginEnd="8dp"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:elevation="2dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_customers_filled"
+                            android:layout_marginBottom="8dp"
+                            android:contentDescription="Customers Icon" />
 
                         <TextView
                             android:id="@+id/total_customers_count"
@@ -108,10 +242,18 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:background="@android:color/white"
+                        android:background="@drawable/stat_card_bg"
                         android:padding="16dp"
                         android:layout_marginStart="8dp"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:elevation="2dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_orders_filled"
+                            android:layout_marginBottom="8dp"
+                            android:contentDescription="Orders Icon" />
 
                         <TextView
                             android:id="@+id/total_orders_count"
@@ -148,10 +290,18 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:background="@android:color/white"
+                        android:background="@drawable/stat_card_bg"
                         android:padding="16dp"
                         android:layout_marginEnd="8dp"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:elevation="2dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_pending"
+                            android:layout_marginBottom="8dp"
+                            android:contentDescription="Pending Icon" />
 
                         <TextView
                             android:id="@+id/pending_orders_count"
@@ -178,10 +328,18 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical"
-                        android:background="@android:color/white"
+                        android:background="@drawable/stat_card_bg"
                         android:padding="16dp"
                         android:layout_marginStart="8dp"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:elevation="2dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_completed"
+                            android:layout_marginBottom="8dp"
+                            android:contentDescription="Completed Icon" />
 
                         <TextView
                             android:id="@+id/completed_orders_count"
@@ -213,7 +371,10 @@
             android:id="@+id/actions_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -223,16 +384,33 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/gradient_card_bg"
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="⚡ Actions"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorPrimary" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚡"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Quick Actions"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="#B76E79"
+                        android:letterSpacing="0.02" />
+
+                </LinearLayout>
 
                 <!-- Register Customer Button -->
                 <com.google.android.material.button.MaterialButton
@@ -243,8 +421,12 @@
                     android:text="👥 Register New Customer"
                     android:textSize="16sp"
                     android:padding="16dp"
+                    android:textColor="@color/white"
+                    app:backgroundTint="#B76E79"
+                    app:cornerRadius="12dp"
                     app:icon="@android:drawable/ic_input_add"
                     app:iconGravity="textStart"
+                    app:iconTint="@color/white"
                     style="@style/Widget.MaterialComponents.Button" />
 
                 <!-- Sync Button -->
@@ -256,8 +438,13 @@
                     android:text="☁️ Sync Now"
                     android:textSize="16sp"
                     android:padding="16dp"
+                    android:textColor="#B76E79"
+                    app:strokeColor="#B76E79"
+                    app:strokeWidth="2dp"
+                    app:cornerRadius="12dp"
                     app:icon="@android:drawable/stat_notify_sync"
                     app:iconGravity="textStart"
+                    app:iconTint="#B76E79"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
                 <!-- Last Sync Info -->

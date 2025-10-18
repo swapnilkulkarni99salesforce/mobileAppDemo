@@ -30,21 +30,96 @@ object WhatsAppHelper {
     fun sendMessage(context: Context, phoneNumber: String, message: String) {
         try {
             if (!isWhatsAppInstalled(context)) {
-                Toast.makeText(context, "WhatsApp is not installed", Toast.LENGTH_SHORT).show()
+                // Fallback: Show options to share via other apps
+                showShareOptions(context, phoneNumber, message)
                 return
             }
             
-            // Clean phone number (remove spaces, dashes, etc.)
-            val cleanNumber = phoneNumber.replace(Regex("[^0-9+]"), "")
+            // Clean phone number (remove spaces, dashes, parentheses, etc.)
+            var cleanNumber = phoneNumber.replace(Regex("[^0-9+]"), "")
             
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse("https://api.whatsapp.com/send?phone=$cleanNumber&text=${Uri.encode(message)}")
-                setPackage("com.whatsapp")
+            // If number doesn't start with +, try adding country code
+            // Note: You may need to adjust country code based on your location
+            if (!cleanNumber.startsWith("+")) {
+                // For India, add +91 (adjust this for your country)
+                cleanNumber = "+91$cleanNumber"
             }
             
-            context.startActivity(intent)
+            // Try method 1: Using WhatsApp API URL (web-based)
+            try {
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    data = Uri.parse("https://api.whatsapp.com/send?phone=$cleanNumber&text=${Uri.encode(message)}")
+                }
+                context.startActivity(intent)
+                return
+            } catch (e: Exception) {
+                // If web API fails, try direct intent
+            }
+            
+            // Try method 2: Using direct WhatsApp intent
+            try {
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    setPackage("com.whatsapp")
+                    putExtra(Intent.EXTRA_TEXT, "$message\n\nPhone: $phoneNumber")
+                }
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                // If both methods fail, show share dialog
+                showShareOptions(context, phoneNumber, message)
+            }
+            
         } catch (e: Exception) {
-            Toast.makeText(context, "Error opening WhatsApp: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Opening WhatsApp... If it doesn't work, try SMS", Toast.LENGTH_LONG).show()
+            // Fallback to share dialog
+            showShareOptions(context, phoneNumber, message)
+        }
+    }
+    
+    /**
+     * Show share options when WhatsApp is not available
+     */
+    private fun showShareOptions(context: Context, phoneNumber: String, message: String) {
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "$message\n\nCustomer: $phoneNumber")
+            type = "text/plain"
+        }
+        
+        val chooserIntent = Intent.createChooser(shareIntent, "Share via")
+        context.startActivity(chooserIntent)
+    }
+    
+    /**
+     * Send SMS as fallback
+     */
+    fun sendViaSMS(context: Context, phoneNumber: String, message: String) {
+        try {
+            val smsIntent = Intent(Intent.ACTION_VIEW).apply {
+                data = Uri.parse("sms:$phoneNumber")
+                putExtra("sms_body", message)
+            }
+            context.startActivity(smsIntent)
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error opening SMS: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    /**
+     * Share via any app (email, messaging, etc.)
+     */
+    fun shareMessage(context: Context, customerName: String, message: String) {
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_SUBJECT, "Message for $customerName")
+            putExtra(Intent.EXTRA_TEXT, message)
+            type = "text/plain"
+        }
+        
+        try {
+            context.startActivity(Intent.createChooser(shareIntent, "Share message via"))
+        } catch (e: Exception) {
+            Toast.makeText(context, "Error sharing message: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
     

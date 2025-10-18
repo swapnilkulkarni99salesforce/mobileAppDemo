@@ -321,16 +321,11 @@ class HomeFragment : Fragment() {
     }
     
     private fun navigateToOrderDetail(orderId: Int) {
-        lifecycleScope.launch {
-            val order = database.orderDao().getAllOrders().find { it.id == orderId }
-            order?.let {
-                val orderDetailFragment = OrderDetailFragment.newInstance(it)
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, orderDetailFragment)
-                    .addToBackStack(null)
-                    .commit()
-            }
-        }
+        val orderDetailFragment = OrderDetailFragment.newInstance(orderId)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, orderDetailFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onResume() {

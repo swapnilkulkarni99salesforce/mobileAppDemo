@@ -26,6 +26,90 @@ import android.util.TypedValue
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.textview.MaterialTextView
 
+/**
+ * Home Dashboard Fragment for the Perfect Fit tailoring application.
+ * 
+ * This is the main landing screen that provides an overview of the business including:
+ * - Personalized time-based greetings
+ * - Motivational quotes for daily inspiration
+ * - Business statistics (customers, orders, completion rates)
+ * - Workload status and capacity indicators
+ * - Delivery alerts for upcoming/overdue orders
+ * - Financial dashboard with revenue tracking
+ * - Synchronization controls
+ * - Quick action buttons for common tasks
+ * 
+ * Architecture:
+ * - MVVM-inspired pattern with LiveData observation
+ * - Coroutines for asynchronous operations
+ * - Repository pattern for data access
+ * - ViewBinding for type-safe view access
+ * 
+ * Key Features:
+ * 
+ * 1. Greeting System:
+ *    - Time-based greetings (Morning, Afternoon, Evening, Night)
+ *    - Context-appropriate subtitles
+ *    - Random motivational quotes
+ * 
+ * 2. Dashboard Statistics:
+ *    - Total customers count
+ *    - Total orders count
+ *    - Pending/In-progress orders
+ *    - Completed orders
+ *    - Auto-refreshes on resume
+ * 
+ * 3. Workload Management:
+ *    - Real-time capacity utilization (%)
+ *    - Visual progress indicator with color coding:
+ *      * Green: Available (< 70%)
+ *      * Yellow: Busy (70-90%)
+ *      * Red: Overbooked (> 90%)
+ *    - Configurable working hours
+ *    - Visibility toggles based on pending orders
+ * 
+ * 4. Delivery Alerts:
+ *    - Urgent: Overdue or due today (red)
+ *    - Warning: Due within 2-3 days (orange)
+ *    - Upcoming: Due within 7 days (blue)
+ *    - Click to view order details
+ *    - Shows top 5 alerts only
+ * 
+ * 5. Financial Dashboard:
+ *    - Today's revenue
+ *    - This month's revenue
+ *    - Outstanding payments
+ *    - Pending payment count
+ *    - Privacy toggle to hide/show amounts
+ * 
+ * 6. Synchronization:
+ *    - Manual sync button
+ *    - Auto-sync toggle switch
+ *    - Last sync timestamp display
+ *    - Sync status messages
+ * 
+ * 7. Quick Actions (FAB):
+ *    - New Customer registration
+ *    - New Order creation
+ *    - Opens bottom sheet modal
+ * 
+ * Performance Optimizations:
+ * - Efficient data loading with suspend functions
+ * - LiveData for reactive updates
+ * - Try-catch blocks for graceful error handling
+ * - Visibility management to hide empty sections
+ * - Accessibility announcements for screen readers
+ * 
+ * Accessibility Features:
+ * - Content descriptions for all interactive elements
+ * - Announcements for data updates
+ * - Semantic markup with MaterialTextView
+ * - High contrast for critical alerts
+ * 
+ * @see [NewActionBottomSheet] for quick action sheet
+ * @see [SyncRepository] for synchronization logic
+ * @see [WorkloadHelper] for workload calculations
+ */
 class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
 
     private var _binding: FragmentHomeBinding? = null
@@ -33,13 +117,16 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
     private lateinit var syncRepository: SyncRepository
     private lateinit var database: AppDatabase
     
-    // Financial data visibility
+    // ===== Financial Data Privacy Management =====
+    // These fields manage the visibility of sensitive financial information
     private var isFinancialDataVisible = false
     private var actualTodayRevenue = 0.0
     private var actualMonthRevenue = 0.0
     private var actualPendingAmount = 0.0
     private var actualPendingCount = 0
     
+    // ===== Motivational Quotes =====
+    // Randomly displayed quotes to inspire the user
     private val motivationalQuotes = listOf(
         "Success is the sum of small efforts repeated day in and day out.",
         "Quality is not an act, it is a habit.",
@@ -77,16 +164,32 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
         loadFinancialDashboard()
     }
 
+    /**
+     * Sets up personalized greeting based on current time of day.
+     * Also displays a random motivational quote for user inspiration.
+     */
     private fun setupGreeting() {
         val greeting = getTimeBasedGreeting()
         binding.greetingText.text = greeting.first
         binding.subtitleText.text = greeting.second
         
-        // Set random motivational quote
+        // Display a random motivational quote
         val randomQuote = motivationalQuotes.random()
         binding.motivationalQuoteText.text = randomQuote
     }
 
+    /**
+     * Determines appropriate greeting and subtitle based on current time.
+     * 
+     * Time Ranges:
+     * - Night (0:00-4:59): Midnight greeting
+     * - Morning (5:00-11:59): Morning greeting
+     * - Afternoon (12:00-16:59): Afternoon greeting
+     * - Evening (17:00-20:59): Evening greeting
+     * - Night (21:00-23:59): Night greeting
+     * 
+     * @return Pair of (greeting, subtitle) strings
+     */
     private fun getTimeBasedGreeting(): Pair<String, String> {
         val calendar = Calendar.getInstance()
         val hourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
@@ -248,6 +351,18 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
         }
     }
 
+    /**
+     * Loads and displays dashboard statistics.
+     * 
+     * Statistics include:
+     * - Total customers registered
+     * - Total orders placed
+     * - Pending/In-progress orders
+     * - Completed/Delivered orders
+     * 
+     * Updates UI with counts and announces changes for accessibility.
+     * Gracefully handles errors with user-friendly error messages.
+     */
     private fun loadDashboardStatistics() {
         lifecycleScope.launch {
             try {
@@ -286,6 +401,22 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
         }
     }
 
+    /**
+     * Loads and displays current workload status.
+     * 
+     * Calculates workload utilization based on:
+     * - Number of pending orders
+     * - Time required per order (from configuration)
+     * - Available working hours this week
+     * 
+     * Visual Indicators:
+     * - Progress bar showing utilization percentage
+     * - Color coding: Green (< 70%), Yellow (70-90%), Red (> 90%)
+     * - Message indicating current capacity status
+     * 
+     * Card is hidden if no pending orders exist.
+     * Announces status changes for accessibility.
+     */
     private fun loadWorkloadStatus() {
         lifecycleScope.launch {
             try {
@@ -329,6 +460,23 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
         }
     }
 
+    /**
+     * Loads and displays delivery alerts for upcoming and overdue orders.
+     * 
+     * Alert Levels:
+     * - URGENT (Red): Overdue or due today
+     * - WARNING (Orange): Due within 2-3 days
+     * - UPCOMING (Blue): Due within 7 days
+     * 
+     * Features:
+     * - Displays top 5 alerts only
+     * - Color-coded labels for quick visual scanning
+     * - Click on alert navigates to order detail
+     * - Ripple effect for better affordance
+     * - High contrast text on error container background
+     * 
+     * Card is hidden if no alerts exist.
+     */
     private fun loadDeliveryAlerts() {
         lifecycleScope.launch {
             try {
@@ -419,6 +567,22 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
             .commit()
     }
 
+    /**
+     * Loads and displays financial dashboard with revenue tracking.
+     * 
+     * Metrics Calculated:
+     * - Today's Revenue: Orders marked as PAID today
+     * - This Month's Revenue: Orders marked as PAID this month
+     * - Outstanding Amount: Sum of unpaid and partially paid orders
+     * - Pending Payment Count: Number of orders with outstanding balance
+     * 
+     * Privacy Features:
+     * - Amounts initially masked as "₹••••"
+     * - Toggle button to show/hide actual values
+     * - Icon changes based on visibility state
+     * 
+     * Card is hidden if no orders exist.
+     */
     private fun loadFinancialDashboard() {
         lifecycleScope.launch {
             try {
@@ -480,19 +644,31 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
         }
     }
     
+    /**
+     * Toggles the visibility of financial data for privacy.
+     * 
+     * Behavior:
+     * - Masked: Shows "₹••••" for all amounts
+     * - Visible: Shows actual rupee values
+     * 
+     * Updates:
+     * - Toggle button icon (eye open/closed)
+     * - Accessibility announcement for screen readers
+     * - All financial text views
+     */
     private fun toggleFinancialVisibility() {
         isFinancialDataVisible = !isFinancialDataVisible
         updateFinancialUI()
         
-        // Update icon
+        // Update toggle icon based on visibility state
         val iconRes = if (isFinancialDataVisible) {
-            android.R.drawable.ic_menu_view // Eye open
+            android.R.drawable.ic_menu_view // Eye open icon
         } else {
-            android.R.drawable.ic_secure // Eye closed/lock
+            android.R.drawable.ic_secure // Lock/eye closed icon
         }
         binding.toggleFinancialVisibility.setIconResource(iconRes)
         
-        // Announce change for accessibility
+        // Announce visibility change for accessibility
         val announcement = if (isFinancialDataVisible) {
             "Financial data visible"
         } else {
@@ -517,6 +693,17 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
         }
     }
 
+    /**
+     * Called when fragment becomes visible to user.
+     * Refreshes all dashboard data to ensure current information is displayed.
+     * 
+     * Refreshes:
+     * - Time-based greeting (in case time period changed)
+     * - Dashboard statistics
+     * - Workload status
+     * - Delivery alerts
+     * - Financial dashboard
+     */
     override fun onResume() {
         super.onResume()
         setupGreeting()

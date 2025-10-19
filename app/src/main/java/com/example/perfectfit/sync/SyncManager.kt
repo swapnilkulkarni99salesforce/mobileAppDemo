@@ -10,17 +10,74 @@ import com.example.perfectfit.network.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+/**
+ * Manages synchronization between local database and remote server.
+ * 
+ * This class handles bidirectional data sync, ensuring that local changes are pushed
+ * to the server and server changes are pulled to the local database. It implements
+ * conflict resolution using timestamps and maintains sync status for each record.
+ * 
+ * Synchronization Flow:
+ * 1. Check network availability
+ * 2. Gather unsynced local changes (PENDING or FAILED status)
+ * 3. Convert local models to API models
+ * 4. Send batch sync request to server
+ * 5. Process server response and update local records
+ * 6. Update sync timestamps and status
+ * 
+ * Sync Status Management:
+ * - PENDING: Record created/modified locally, not yet synced
+ * - SYNCED: Record successfully synchronized with server
+ * - FAILED: Sync attempt failed, will retry next sync
+ * 
+ * Features:
+ * - Batch synchronization for efficiency
+ * - Individual entity sync (customers, orders, measurements)
+ * - Conflict resolution using lastModified timestamps
+ * - Network availability checking
+ * - Persistent sync state using SharedPreferences
+ * - Detailed logging for debugging
+ * 
+ * Error Handling:
+ * - Network errors: Returns SYNC_NO_NETWORK, records remain PENDING
+ * - Server errors: Returns SYNC_FAILED, records marked FAILED for retry
+ * - Partial failures: Returns SYNC_PARTIAL, only failed records marked FAILED
+ * 
+ * Thread Safety:
+ * - All database operations run on Dispatchers.IO
+ * - SharedPreferences operations are thread-safe
+ * 
+ * @param context Application context for database and preferences access
+ * 
+ * @see [Customer] for customer sync
+ * @see [Order] for order sync
+ * @see [Measurement] for measurement sync
+ */
 class SyncManager(private val context: Context) {
     
+    // Database instance for local data access
     private val database = AppDatabase.getDatabase(context)
+    
+    // API service for network communication
     private val apiService = RetrofitClient.apiService
-    private val prefs = context.getSharedPreferences("sync_prefs", Context.MODE_PRIVATE)
+    
+    // SharedPreferences for persistent sync state
+    private val prefs = context.getSharedPreferences(SYNC_PREFS_NAME, Context.MODE_PRIVATE)
     
     companion object {
         private const val TAG = "SyncManager"
+        private const val SYNC_PREFS_NAME = "sync_prefs"
         private const val PREF_LAST_SYNC = "last_sync_timestamp"
         
-        // Sync result codes
+        /**
+         * Sync Result Codes
+         * 
+         * These constants represent the outcome of a sync operation:
+         * - SYNC_SUCCESS: All records synced successfully
+         * - SYNC_PARTIAL: Some records failed, others succeeded
+         * - SYNC_FAILED: Sync operation failed completely
+         * - SYNC_NO_NETWORK: No network connection available
+         */
         const val SYNC_SUCCESS = 0
         const val SYNC_PARTIAL = 1
         const val SYNC_FAILED = 2
@@ -261,14 +318,35 @@ class SyncManager(private val context: Context) {
     }
     
     /**
-     * Check if network is available
+     * Checks if network connectivity is available.
+     * 
+     * Current Implementation: Simple ping test
+     * This is a basic connectivity check that pings google.com.
+     * 
+     * Limitations:
+     * - May be slow (network timeout)
+     * - Requires INTERNET permission
+     * - Doesn't check actual API server availability
+     * 
+     * TODO - Production Improvements:
+     * Replace with ConnectivityManager for better reliability:
+     * ```
+     * val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+     * val network = connectivityManager.activeNetwork ?: return false
+     * val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+     * return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+     * ```
+     * 
+     * @return true if network is available, false otherwise
      */
     private fun isNetworkAvailable(): Boolean {
-        // Simple check - you can enhance this with ConnectivityManager
         return try {
             val command = "ping -c 1 google.com"
-            Runtime.getRuntime().exec(command).waitFor() == 0
+            val process = Runtime.getRuntime().exec(command)
+            val exitCode = process.waitFor()
+            exitCode == 0
         } catch (e: Exception) {
+            Log.w(TAG, "Network check failed: ${e.message}", e)
             false
         }
     }

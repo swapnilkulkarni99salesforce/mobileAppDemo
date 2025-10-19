@@ -4,50 +4,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
+    android:background="?android:attr/colorBackground"
     tools:context=".ClientFitProfileFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/card_light"
-        app:elevation="4dp">
+        android:background="?attr/colorSurface"
+        app:elevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="20dp">
 
             <TextView
+                style="@style/TextAppearance.Material3.HeadlineMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Client Fit Profile"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="@color/rose_gold"
-                android:fontFamily="sans-serif-medium"/>
+                android:textColor="?attr/colorOnSurface" />
 
             <TextView
                 android:id="@+id/client_name"
+                style="@style/TextAppearance.Material3.BodyLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Client Name"
-                android:textSize="16sp"
-                android:textColor="@color/on_surface_variant_light"/>
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
             <TextView
                 android:id="@+id/last_measurement_info"
+                style="@style/TextAppearance.Material3.BodySmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="No measurements recorded"
-                android:textSize="13sp"
-                android:textColor="@color/sage_green"
-                android:textStyle="italic"
-                android:fontFamily="sans-serif-light"/>
+                android:textColor="?attr/colorPrimary" />
 
         </LinearLayout>
 
@@ -55,14 +51,14 @@
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/card_light"
-            app:tabMode="fixed"
+            android:background="?attr/colorSurface"
             app:tabGravity="fill"
-            app:tabSelectedTextColor="@color/rose_gold"
-            app:tabTextColor="@color/on_surface_variant_light"
-            app:tabIndicatorColor="@color/rose_gold"
+            app:tabIndicatorColor="?attr/colorPrimary"
             app:tabIndicatorHeight="3dp"
-            app:tabTextAppearance="@style/TabTextStyle"/>
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="?attr/colorPrimary"
+            app:tabTextAppearance="@style/TabTextStyle"
+            app:tabTextColor="?attr/colorOnSurfaceVariant" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -70,7 +66,7 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_edit_measurements"
@@ -78,9 +74,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_edit"
         android:contentDescription="Edit Measurements"
-        app:tint="@android:color/white"/>
+        android:src="@android:drawable/ic_menu_edit"
+        app:tint="?attr/colorOnPrimaryContainer" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-

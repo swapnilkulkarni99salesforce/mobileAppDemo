@@ -4,37 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
     android:fillViewport="true"
     tools:context=".CreateOrderFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:paddingBottom="24dp">
 
         <TextView
             android:id="@+id/title_text"
+            style="@style/TextAppearance.Material3.HeadlineMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
             android:text="Create New Order"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textColor="?attr/colorOnSurface" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/order_details_card"
+            style="@style/Widget.PerfectFit.Card.Elevated"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_text">
+            android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,21 +38,20 @@
                 android:padding="20dp">
 
                 <TextView
+                    style="@style/TextAppearance.Material3.TitleMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:text="Order Details"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorPrimary" />
+                    android:textColor="?attr/colorOnSurface" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/customer_name_layout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:hint="Customer Name"
-                    app:boxBackgroundMode="outline"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    android:layout_marginTop="8dp"
+                    android:hint="Customer Name">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/customer_name_input"
@@ -70,12 +64,11 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/order_date_layout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="Order Date"
-                    app:boxBackgroundMode="outline"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    android:hint="Order Date">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/order_date_input"
@@ -88,12 +81,11 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/order_type_layout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:hint="Order Type"
-                    app:boxBackgroundMode="outline"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                    android:hint="Order Type">
 
                     <AutoCompleteTextView
                         android:id="@+id/order_type_dropdown"
@@ -105,44 +97,43 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/estimated_delivery_layout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:hint="Estimated Delivery Date"
-                    app:boxBackgroundMode="outline"
-                    app:endIconMode="custom"
                     app:endIconDrawable="@android:drawable/ic_menu_my_calendar"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    app:endIconMode="custom">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/estimated_delivery_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:focusable="false"
-                        android:clickable="true" />
+                        android:clickable="true"
+                        android:focusable="false" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:id="@+id/delivery_info_text"
+                    style="@style/TextAppearance.Material3.BodySmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
                     android:text=""
-                    android:textSize="14sp"
                     android:textColor="?attr/colorPrimary"
-                    android:textStyle="italic"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:text="Estimated delivery: 7 days"
+                    tools:visibility="visible" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/amount_layout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:hint="Amount (₹)"
-                    app:boxBackgroundMode="outline"
-                    app:prefixText="₹ "
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    app:prefixText="₹ ">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/amount_input"
@@ -158,14 +149,10 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/instructions_card"
+            style="@style/Widget.PerfectFit.Card.Elevated"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/order_details_card">
+            android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -174,30 +161,28 @@
                 android:padding="20dp">
 
                 <TextView
+                    style="@style/TextAppearance.Material3.TitleMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:text="Special Instructions"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="?attr/colorPrimary" />
+                    android:textColor="?attr/colorOnSurface" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/instructions_layout"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:hint="Enter any special instructions"
-                    app:boxBackgroundMode="outline"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    android:hint="Enter any special instructions">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/instructions_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="120dp"
                         android:gravity="top|start"
                         android:inputType="textMultiLine"
-                        android:lines="5" />
+                        android:lines="5"
+                        android:minHeight="120dp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -207,34 +192,22 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/save_order_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Create Order"
-            android:textSize="16sp"
-            android:padding="16dp"
-            app:icon="@android:drawable/ic_menu_save"
-            app:iconGravity="start"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/instructions_card" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/cancel_button"
+            style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Cancel"
-            android:textSize="16sp"
-            android:padding="16dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/save_order_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="16dp" />
+            android:minHeight="56dp"
+            android:text="Create Order" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancel_button"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:minHeight="56dp"
+            android:text="Cancel" />
+
+    </LinearLayout>
 
 </ScrollView>
-

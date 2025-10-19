@@ -3,32 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
+    android:background="?android:attr/colorBackground"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:paddingBottom="24dp">
 
         <TextView
             android:id="@+id/edit_title"
+            style="@style/TextAppearance.Material3.HeadlineMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="Edit Measurements"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/rose_gold"
-            android:layout_marginBottom="8dp"/>
+            android:textColor="?attr/colorOnSurface" />
 
         <TextView
             android:id="@+id/customer_name_text"
+            style="@style/TextAppearance.Material3.BodyLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
             android:text="Customer Name"
-            android:textSize="16sp"
-            android:layout_marginBottom="24dp"/>
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
         <!-- Kurti Measurements Section -->
         <LinearLayout
@@ -38,24 +39,23 @@
             android:orientation="vertical">
 
             <TextView
+                style="@style/TextAppearance.Material3.TitleMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="KURTI MEASUREMENTS"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/rose_gold_dark"
+                android:layout_marginBottom="12dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="12dp"/>
+                android:text="Kurti Measurements"
+                android:textColor="?attr/colorOnSurface" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/kurti_fields_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
                 android:clipToPadding="false"
-                android:paddingBottom="8dp"
                 android:minHeight="1500dp"
-                android:overScrollMode="never"/>
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                android:paddingBottom="8dp" />
 
         </LinearLayout>
 
@@ -67,24 +67,23 @@
             android:orientation="vertical">
 
             <TextView
+                style="@style/TextAppearance.Material3.TitleMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PANT MEASUREMENTS"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/rose_gold_dark"
+                android:layout_marginBottom="12dp"
                 android:layout_marginTop="24dp"
-                android:layout_marginBottom="12dp"/>
+                android:text="Pant Measurements"
+                android:textColor="?attr/colorOnSurface" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/pant_fields_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
                 android:clipToPadding="false"
-                android:paddingBottom="8dp"
                 android:minHeight="400dp"
-                android:overScrollMode="never"/>
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                android:paddingBottom="8dp" />
 
         </LinearLayout>
 
@@ -96,49 +95,45 @@
             android:orientation="vertical">
 
             <TextView
+                style="@style/TextAppearance.Material3.TitleMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BLOUSE MEASUREMENTS"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/rose_gold_dark"
+                android:layout_marginBottom="12dp"
                 android:layout_marginTop="24dp"
-                android:layout_marginBottom="12dp"/>
+                android:text="Blouse Measurements"
+                android:textColor="?attr/colorOnSurface" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/blouse_fields_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
                 android:clipToPadding="false"
-                android:paddingBottom="8dp"
                 android:minHeight="1300dp"
-                android:overScrollMode="never"/>
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                android:paddingBottom="8dp" />
 
         </LinearLayout>
 
         <!-- Action Buttons -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/save_button"
+            style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Save Measurements"
-            android:textSize="16sp"
-            android:padding="16dp"/>
+            android:minHeight="56dp"
+            android:text="Save Measurements" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/cancel_button"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            android:text="Cancel"
-            android:textSize="16sp"
-            android:padding="16dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+            android:minHeight="56dp"
+            android:text="Cancel" />
 
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
-

@@ -5,163 +5,136 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="@color/background_light"
+    android:background="?android:attr/colorBackground"
     tools:context=".CustomerDetailFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="24dp">
 
-        <!-- Header Section with Gradient -->
-        <FrameLayout
+        <!-- Header Section (Clean - No gradient) -->
+        <LinearLayout
             android:id="@+id/header_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/gradient_header"
-            android:elevation="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:background="?attr/colorPrimaryContainer"
+            android:elevation="0dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp">
 
-            <!-- Decorative Pattern -->
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/decorative_pattern"
-                android:scaleType="centerCrop"
-                android:alpha="0.3"
-                android:contentDescription="Decorative Pattern" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/customer_avatar"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:contentDescription="@string/cd_customer_avatar"
+                android:src="@drawable/ic_person_avatar"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+                app:tint="?attr/colorOnPrimaryContainer"
+                tools:ignore="ContentDescription" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/customer_name"
+                style="@style/TextAppearance.Material3.HeadlineMedium"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="24dp"
-                android:gravity="center">
+                android:layout_marginTop="16dp"
+                android:text="Customer Name"
+                android:textAlignment="center"
+                android:textColor="?attr/colorOnPrimaryContainer"
+                tools:text="Priya Sharma" />
 
-                <FrameLayout
-                    android:layout_width="100dp"
-                    android:layout_height="100dp">
-                
-                <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@drawable/avatar_frame"
-                    android:contentDescription="Avatar Frame" />
-                
-                <ImageView
-                    android:id="@+id/customer_avatar"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_person_avatar"
-                    android:tint="@color/white"
-                    android:contentDescription="Customer Avatar" />
-                    
-            </FrameLayout>
+        </LinearLayout>
 
-                <TextView
-                    android:id="@+id/customer_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Customer Name"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:textAlignment="center" />
-
-            </LinearLayout>
-
-        </FrameLayout>
-
+        <!-- Personal Information Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/info_card"
+            style="@style/Widget.PerfectFit.Card.Elevated"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/header_section">
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gradient_card_bg"
                 android:orientation="vertical"
                 android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
                         android:src="@drawable/ic_person"
-                        android:tint="?attr/colorPrimary"
-                        android:contentDescription="Person Icon" />
+                        app:tint="?attr/colorPrimary" />
 
                     <TextView
+                        style="@style/TextAppearance.Material3.TitleMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="Personal Information"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/colorPrimary" />
+                        android:textColor="?attr/colorOnSurface" />
 
                 </LinearLayout>
 
+                <!-- Age -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:minHeight="40dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        style="@style/TextAppearance.Material3.BodyMedium"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:text="Age:"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:minWidth="120dp" />
+                        android:textColor="?attr/colorOnSurfaceVariant" />
 
                     <TextView
                         android:id="@+id/customer_age"
+                        style="@style/TextAppearance.Material3.BodyLarge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="25 years"
-                        android:textSize="16sp" />
+                        android:textColor="?attr/colorOnSurface"
+                        tools:text="28 years" />
 
                 </LinearLayout>
 
+                <!-- Birth Date -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:minHeight="40dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        style="@style/TextAppearance.Material3.BodyMedium"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:text="Birth Date:"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:minWidth="120dp" />
+                        android:textColor="?attr/colorOnSurfaceVariant" />
 
                     <TextView
                         android:id="@+id/customer_birthdate"
+                        style="@style/TextAppearance.Material3.BodyLarge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="01/01/1990"
-                        android:textSize="16sp" />
+                        android:textColor="?attr/colorOnSurface"
+                        tools:text="15/03/1995" />
 
                 </LinearLayout>
 
@@ -169,95 +142,97 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Contact Information Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/contact_card"
+            style="@style/Widget.PerfectFit.Card.Elevated"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/info_card">
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gradient_card_bg"
                 android:orientation="vertical"
                 android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
                         android:src="@drawable/ic_phone"
-                        android:tint="?attr/colorPrimary"
-                        android:contentDescription="Phone Icon" />
+                        app:tint="?attr/colorPrimary" />
 
                     <TextView
+                        style="@style/TextAppearance.Material3.TitleMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="Contact Information"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/colorPrimary" />
+                        android:textColor="?attr/colorOnSurface" />
 
                 </LinearLayout>
 
+                <!-- Mobile -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:minHeight="40dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        style="@style/TextAppearance.Material3.BodyMedium"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:text="Mobile:"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:minWidth="120dp" />
+                        android:textColor="?attr/colorOnSurfaceVariant" />
 
                     <TextView
                         android:id="@+id/customer_mobile"
+                        style="@style/TextAppearance.Material3.BodyLarge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="+1 234 567 8900"
-                        android:textSize="16sp" />
+                        android:textColor="?attr/colorPrimary"
+                        android:textStyle="bold"
+                        tools:text="+91 98765 43210" />
 
                 </LinearLayout>
 
+                <!-- Alternate Mobile -->
                 <LinearLayout
                     android:id="@+id/alternate_mobile_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:minHeight="40dp"
                     android:orientation="horizontal"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        style="@style/TextAppearance.Material3.BodyMedium"
+                        android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:text="Alternate:"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:minWidth="120dp" />
+                        android:textColor="?attr/colorOnSurfaceVariant" />
 
                     <TextView
                         android:id="@+id/customer_alternate_mobile"
+                        style="@style/TextAppearance.Material3.BodyLarge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="+1 234 567 8901"
-                        android:textSize="16sp" />
+                        android:textColor="?attr/colorOnSurface"
+                        tools:text="+91 98765 43211" />
 
                 </LinearLayout>
 
@@ -265,127 +240,92 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Address Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/address_card"
+            style="@style/Widget.PerfectFit.Card.Elevated"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/contact_card"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gradient_card_bg"
                 android:orientation="vertical"
                 android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no"
                         android:src="@drawable/ic_location"
-                        android:tint="?attr/colorPrimary"
-                        android:contentDescription="Location Icon" />
+                        app:tint="?attr/colorPrimary" />
 
                     <TextView
+                        style="@style/TextAppearance.Material3.TitleMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="Address"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/colorPrimary" />
+                        android:textColor="?attr/colorOnSurface" />
 
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/customer_address"
+                    style="@style/TextAppearance.Material3.BodyLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:text="123 Main Street, City, State, 12345"
-                    android:textSize="16sp" />
+                    android:textColor="?attr/colorOnSurface"
+                    tools:text="123 Main Street, Bangalore, Karnataka 560001" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Action Buttons -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/view_measurements_button"
+            style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="24dp"
-            android:text="📏 View Client Fit Profile"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:padding="16dp"
-            app:backgroundTint="#1A5F7A"
-            app:cornerRadius="12dp"
-            app:icon="@android:drawable/ic_menu_view"
-            app:iconGravity="textStart"
-            app:iconTint="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/address_card"
-            style="@style/Widget.MaterialComponents.Button" />
+            android:minHeight="56dp"
+            android:text="View Client Fit Profile" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/create_order_button"
+            style="@style/Widget.Material3.Button.TonalButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="12dp"
-            android:text="➕ Create Order"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:padding="16dp"
-            app:backgroundTint="#1A5F7A"
-            app:cornerRadius="12dp"
-            app:icon="@android:drawable/ic_menu_add"
-            app:iconGravity="textStart"
-            app:iconTint="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_measurements_button"
-            style="@style/Widget.MaterialComponents.Button" />
+            android:minHeight="56dp"
+            android:text="Create Order" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/back_button"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="12dp"
-            android:text="⬅️ Back to Customers"
-            android:textSize="16sp"
-            android:textColor="#1A5F7A"
-            android:padding="16dp"
-            app:strokeColor="#1A5F7A"
-            app:strokeWidth="2dp"
-            app:cornerRadius="12dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/create_order_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="24dp" />
+            android:minHeight="56dp"
+            android:text="Back to Customers" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </ScrollView>
-

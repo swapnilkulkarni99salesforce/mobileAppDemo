@@ -44,6 +44,7 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
         observeSyncStatus()
         loadDashboardStatistics()
         loadWorkloadStatus()
+        loadDeliveryAlerts()
         loadFinancialDashboard()
     }
 
@@ -51,6 +52,10 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
         val greeting = getTimeBasedGreeting()
         binding.greetingText.text = greeting.first
         binding.subtitleText.text = greeting.second
+        
+        // Set random motivational quote
+        val randomQuote = motivationalQuotes.random()
+        binding.motivationalQuoteText.text = randomQuote
     }
 
     private fun getTimeBasedGreeting(): Pair<String, String> {
@@ -277,6 +282,63 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
         }
     }
 
+    private fun loadDeliveryAlerts() {
+        lifecycleScope.launch {
+            try {
+                val pendingOrders = database.orderDao().getAllOrders().filter {
+                    it.status.equals("Pending", ignoreCase = true) ||
+                            it.status.equals("In Progress", ignoreCase = true)
+                }
+
+                val alerts = WorkloadHelper.getDeliveryAlerts(pendingOrders)
+
+                if (alerts.isEmpty()) {
+                    binding.deliveryAlertsCard.visibility = View.GONE
+                    return@launch
+                }
+
+                // Show the card
+                binding.deliveryAlertsCard.visibility = View.VISIBLE
+
+                // Clear existing alerts
+                binding.deliveryAlertsContainer.removeAllViews()
+
+                // Add alert items (max 5)
+                alerts.take(5).forEach { alert ->
+                    val alertView = TextView(requireContext()).apply {
+                        text = WorkloadHelper.formatDeliveryAlertMessage(alert)
+                        textSize = 14f
+                        setPadding(0, 12, 0, 12)
+
+                        val textColor = when (alert.alertLevel) {
+                            WorkloadHelper.AlertLevel.URGENT -> R.color.status_error
+                            WorkloadHelper.AlertLevel.WARNING -> R.color.status_pending
+                            WorkloadHelper.AlertLevel.UPCOMING -> android.R.color.holo_blue_dark
+                        }
+                        setTextColor(ContextCompat.getColor(requireContext(), textColor))
+
+                        // Make clickable to view order details
+                        setOnClickListener {
+                            navigateToOrderDetail(alert.order.id)
+                        }
+                    }
+                    binding.deliveryAlertsContainer.addView(alertView)
+                }
+
+            } catch (e: Exception) {
+                binding.deliveryAlertsCard.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun navigateToOrderDetail(orderId: Int) {
+        val orderDetailFragment = OrderDetailFragment.newInstance(orderId)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, orderDetailFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
     private fun loadFinancialDashboard() {
         lifecycleScope.launch {
             try {
@@ -340,6 +402,7 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
         setupGreeting()
         loadDashboardStatistics()
         loadWorkloadStatus()
+        loadDeliveryAlerts()
         loadFinancialDashboard()
     }
 

@@ -2,7 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_light"
+    android:background="?android:attr/colorBackground"
     android:fillViewport="true">
 
     <LinearLayout
@@ -12,24 +12,22 @@
         android:padding="16dp">
 
         <TextView
+            style="@style/TextAppearance.Material3.TitleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="Kurti Measurements"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/rose_gold"
-            android:layout_marginBottom="16dp"/>
+            android:textColor="?attr/colorOnSurface" />
 
         <!-- All Kurti Measurements -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/measurements_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:minHeight="2000dp"
             android:nestedScrollingEnabled="false"
-            android:overScrollMode="never"
-            android:minHeight="2000dp"/>
+            android:overScrollMode="never" />
 
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
-

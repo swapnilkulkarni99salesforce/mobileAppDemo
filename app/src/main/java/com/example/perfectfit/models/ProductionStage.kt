@@ -159,6 +159,22 @@ data class ProductionStage(
                 else -> 0f
             }
         }
+        
+        /**
+         * Returns the display name for a stage (static method).
+         */
+        fun getStageDisplayName(stage: String): String {
+            return when (stage) {
+                STAGE_PENDING -> "Pending"
+                STAGE_CUTTING -> "Cutting"
+                STAGE_STITCHING -> "Stitching"
+                STAGE_FINISHING -> "Finishing"
+                STAGE_QUALITY_CHECK -> "Quality Check"
+                STAGE_READY -> "Ready for Delivery"
+                STAGE_DELIVERED -> "Delivered"
+                else -> stage
+            }
+        }
     }
 }
 

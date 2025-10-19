@@ -21,11 +21,13 @@ object NotificationHelper {
     private const val CHANNEL_ID_DELIVERY_REMINDERS = "delivery_reminders"
     private const val CHANNEL_ID_PAYMENT_REMINDERS = "payment_reminders"
     private const val CHANNEL_ID_OVERDUE_ALERTS = "overdue_alerts"
+    private const val CHANNEL_ID_BIRTHDAY_REMINDERS = "birthday_reminders"
     
     private const val NOTIFICATION_ID_DAILY = 1001
     private const val NOTIFICATION_ID_DELIVERY = 2001
     private const val NOTIFICATION_ID_PAYMENT = 3001
     private const val NOTIFICATION_ID_OVERDUE = 4001
+    private const val NOTIFICATION_ID_BIRTHDAY = 5001
     
     /**
      * Create all notification channels
@@ -70,11 +72,21 @@ object NotificationHelper {
                 description = "Alerts for overdue orders"
             }
             
+            // Birthday Reminders Channel
+            val birthdayChannel = NotificationChannel(
+                CHANNEL_ID_BIRTHDAY_REMINDERS,
+                "Birthday Reminders",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "Customer birthday reminders"
+            }
+            
             notificationManager.createNotificationChannels(listOf(
                 dailyChannel,
                 deliveryChannel,
                 paymentChannel,
-                overdueChannel
+                overdueChannel,
+                birthdayChannel
             ))
         }
     }
@@ -249,6 +261,38 @@ object NotificationHelper {
             .build()
         
         NotificationManagerCompat.from(context).notify(NOTIFICATION_ID_OVERDUE, notification)
+    }
+    
+    /**
+     * Show birthday reminder notification
+     */
+    fun sendBirthdayReminder(
+        context: Context,
+        title: String,
+        message: String
+    ) {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID_BIRTHDAY_REMINDERS)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+        
+        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID_BIRTHDAY, notification)
     }
 }
 

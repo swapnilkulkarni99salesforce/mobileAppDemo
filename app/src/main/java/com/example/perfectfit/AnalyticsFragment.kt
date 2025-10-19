@@ -188,7 +188,7 @@ class AnalyticsFragment : Fragment() {
             if (count > 3) { // Threshold for bottleneck
                 hasBottlenecks = true
                 val textView = TextView(requireContext()).apply {
-                    text = "⚠️ $count orders in ${ProductionStage().copy(currentStage = stageName).getStageDisplayName()}"
+                    text = "⚠️ $count orders in ${ProductionStage.getStageDisplayName(stageName)}"
                     textSize = 16f
                     setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark))
                     setPadding(0, 8, 0, 8)

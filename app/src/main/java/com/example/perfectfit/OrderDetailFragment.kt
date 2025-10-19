@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -321,7 +322,7 @@ class OrderDetailFragment : Fragment() {
                 "In progress"
             }
             
-            title.text = "${ProductionStage().copy(currentStage = stage.stageName).getStageDisplayName()} - $durationText"
+            title.text = "${ProductionStage.getStageDisplayName(stage.stageName)} - $durationText"
             title.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
             
             val dateFormat = SimpleDateFormat("dd/MM HH:mm", Locale.getDefault())
@@ -347,7 +348,7 @@ class OrderDetailFragment : Fragment() {
         }
         
         val nextStage = ProductionStage.getAllStages()[currentIndex + 1]
-        val nextStageDisplay = ProductionStage().copy(currentStage = nextStage).getStageDisplayName()
+        val nextStageDisplay = ProductionStage.getStageDisplayName(nextStage)
         
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Move to Next Stage")

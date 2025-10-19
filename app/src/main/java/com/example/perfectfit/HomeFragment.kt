@@ -15,7 +15,9 @@ import com.example.perfectfit.models.Order
 import com.example.perfectfit.models.WorkloadConfig
 import com.example.perfectfit.sync.SyncRepository
 import com.example.perfectfit.utils.WorkloadHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 import android.text.SpannableString
@@ -597,7 +599,7 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
                 val summaryText = WorkloadHelper.formatWeeklySummary(weeklyData)
                 
                 // For now, show as a Toast (can be converted to a card later)
-                withContext(kotlinx.coroutines.Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     // You can add a card in the layout to display this
                     // For now, we'll just log it or show on demand
                     // This data is ready to be displayed in a new card widget

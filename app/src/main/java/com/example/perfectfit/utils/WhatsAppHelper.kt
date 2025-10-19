@@ -29,48 +29,36 @@ object WhatsAppHelper {
      */
     fun sendMessage(context: Context, phoneNumber: String, message: String) {
         try {
-            if (!isWhatsAppInstalled(context)) {
-                // Fallback: Show options to share via other apps
-                showShareOptions(context, phoneNumber, message)
-                return
-            }
-            
             // Clean phone number (remove spaces, dashes, parentheses, etc.)
             var cleanNumber = phoneNumber.replace(Regex("[^0-9+]"), "")
             
-            // If number doesn't start with +, try adding country code
+            // If number doesn't start with +, add country code
             // Note: You may need to adjust country code based on your location
             if (!cleanNumber.startsWith("+")) {
                 // For India, add +91 (adjust this for your country)
                 cleanNumber = "+91$cleanNumber"
             }
             
-            // Try method 1: Using WhatsApp API URL (web-based)
-            try {
-                val intent = Intent(Intent.ACTION_VIEW).apply {
-                    data = Uri.parse("https://api.whatsapp.com/send?phone=$cleanNumber&text=${Uri.encode(message)}")
-                }
-                context.startActivity(intent)
-                return
-            } catch (e: Exception) {
-                // If web API fails, try direct intent
-            }
+            // Remove + from number for WhatsApp API (it expects numbers without +)
+            val numberWithoutPlus = cleanNumber.removePrefix("+")
             
-            // Try method 2: Using direct WhatsApp intent
-            try {
-                val intent = Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
-                    setPackage("com.whatsapp")
-                    putExtra(Intent.EXTRA_TEXT, "$message\n\nPhone: $phoneNumber")
-                }
+            // Using WhatsApp API URL - this is the most reliable method
+            val url = "https://api.whatsapp.com/send?phone=$numberWithoutPlus&text=${Uri.encode(message)}"
+            
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(url)
+            
+            // Check if there's an app to handle this intent
+            if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
-            } catch (e: Exception) {
-                // If both methods fail, show share dialog
+            } else {
+                // WhatsApp not installed, show fallback options
+                Toast.makeText(context, "WhatsApp is not installed. Opening alternatives...", Toast.LENGTH_SHORT).show()
                 showShareOptions(context, phoneNumber, message)
             }
             
         } catch (e: Exception) {
-            Toast.makeText(context, "Opening WhatsApp... If it doesn't work, try SMS", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "Error opening WhatsApp: ${e.message}", Toast.LENGTH_LONG).show()
             // Fallback to share dialog
             showShareOptions(context, phoneNumber, message)
         }

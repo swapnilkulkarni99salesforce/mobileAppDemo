@@ -126,6 +126,67 @@
                     tools:text="Estimated delivery: 7 days"
                     tools:visibility="visible" />
 
+                <!-- ✨ CONFIDENCE INDICATOR CARD -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/confidence_indicator_card"
+                    style="@style/Widget.PerfectFit.Card.Filled"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="?attr/colorSecondaryContainer"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/confidence_emoji"
+                                style="@style/TextAppearance.Material3.HeadlineSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                tools:text="🟢" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/confidence_level_text"
+                                    style="@style/TextAppearance.Material3.TitleSmall"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="?attr/colorOnSecondaryContainer"
+                                    tools:text="High Confidence" />
+
+                                <TextView
+                                    android:id="@+id/confidence_detail_text"
+                                    style="@style/TextAppearance.Material3.BodySmall"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textColor="?attr/colorOnSecondaryContainer"
+                                    tools:text="Buffer: +2 days" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/amount_layout"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"

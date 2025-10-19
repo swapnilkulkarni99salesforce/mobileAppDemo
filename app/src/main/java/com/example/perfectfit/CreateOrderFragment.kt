@@ -197,6 +197,16 @@ class CreateOrderFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     updateDeliveryDate()
                     
+                    // ✨ NEW: Display confidence in UI card!
+                    binding.confidenceIndicatorCard.visibility = View.VISIBLE
+                    binding.confidenceEmoji.text = confidenceEmoji
+                    binding.confidenceLevelText.text = confidenceText
+                    binding.confidenceDetailText.text = if (estimates.daysDifference > 0) {
+                        "Buffer: +${estimates.daysDifference} days | ${pendingOrders.size} pending orders"
+                    } else {
+                        "${pendingOrders.size} pending orders"
+                    }
+                    
                     // Show comparison with visual confidence indicator
                     val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
                     val optimisticStr = dateFormat.format(estimates.optimisticDate.time)

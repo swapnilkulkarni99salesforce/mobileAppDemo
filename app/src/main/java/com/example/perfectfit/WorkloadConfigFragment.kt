@@ -83,9 +83,118 @@ class WorkloadConfigFragment : Fragment() {
             requireActivity().onBackPressed()
         }
         
-        // ✨ QUICK WIN 2: Add extra hours quick action (optional UI element)
-        // This can be added if there's a button in the layout
-        // For now, this functionality is available via QuickActionsHelper
+        // ✨ QUICK WIN 2: Add extra hours quick action
+        binding.addExtraHoursButton.setOnClickListener {
+            showAddExtraHoursDialog()
+        }
+    }
+    
+    /**
+     * ✨ NEW: Show dialog to add extra hours for today
+     */
+    private fun showAddExtraHoursDialog() {
+        val input = android.widget.EditText(requireContext()).apply {
+            hint = "Extra hours (e.g., 2.5)"
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+            setPadding(50, 40, 50, 40)
+        }
+        
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("⏰ Add Extra Hours Today")
+            .setMessage("How many extra hours can you work today?\n\nThis will temporarily increase your capacity.")
+            .setView(input)
+            .setPositiveButton("Preview Impact") { _, _ ->
+                val hours = input.text.toString().toFloatOrNull()
+                if (hours != null && hours > 0) {
+                    showImpactPreview(hours)
+                } else {
+                    Toast.makeText(requireContext(), "Please enter a valid number", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+    
+    /**
+     * ✨ NEW: Show impact preview before applying
+     */
+    private fun showImpactPreview(extraHours: Float) {
+        lifecycleScope.launch {
+            try {
+                val config = withContext(Dispatchers.IO) {
+                    database.workloadConfigDao().getConfig() ?: WorkloadConfig()
+                }
+                
+                val pendingOrders = withContext(Dispatchers.IO) {
+                    database.orderDao().getAllOrders().filter {
+                        it.status.equals("Pending", ignoreCase = true) ||
+                        it.status.equals("In Progress", ignoreCase = true)
+                    }
+                }
+                
+                // Calculate impact
+                val impact = com.example.perfectfit.utils.QuickActionsHelper.calculateExtraHoursImpact(
+                    extraHours,
+                    config,
+                    pendingOrders.size
+                )
+                
+                val impactMessage = com.example.perfectfit.utils.QuickActionsHelper.formatImpactMessage(impact)
+                
+                // Show impact and confirm
+                androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                    .setTitle("📊 Impact Preview")
+                    .setMessage(impactMessage)
+                    .setPositiveButton("Apply Now") { _, _ ->
+                        applyExtraHours(extraHours)
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+                
+            } catch (e: Exception) {
+                Toast.makeText(
+                    requireContext(),
+                    "Error calculating impact: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+    
+    /**
+     * ✨ NEW: Apply the extra hours
+     */
+    private fun applyExtraHours(hours: Float) {
+        lifecycleScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    com.example.perfectfit.utils.QuickActionsHelper.addExtraHoursToday(
+                        requireContext(),
+                        hours,
+                        database
+                    )
+                }
+                
+                result.onSuccess { message ->
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                    // Reload the configuration to show updated hours
+                    loadExistingConfig()
+                }.onFailure { error ->
+                    Toast.makeText(
+                        requireContext(),
+                        "Error: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                
+            } catch (e: Exception) {
+                Toast.makeText(
+                    requireContext(),
+                    "Error applying extra hours: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     private fun setupTextWatchers() {

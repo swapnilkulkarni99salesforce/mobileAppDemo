@@ -460,6 +460,11 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
                     getString(R.string.announce_workload, status.message)
                 )
 
+                // ✨ NEW: Update capacity status badge
+                binding.capacityStatusBadge.visibility = View.VISIBLE
+                val emoji = WorkloadHelper.getStatusEmoji(status.statusLevel)
+                binding.capacityStatusText.text = "$emoji ${status.utilizationPercentage}% Capacity"
+
             } catch (e: Exception) {
                 // Check if view is still attached before accessing binding
                 if (isAdded && _binding != null) {
@@ -597,6 +602,9 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
      * 
      * Helps with forward planning and identifying capacity bottlenecks
      */
+    /**
+     * ✨ UI UPDATE: Now displays in visible card!
+     */
     private fun loadWeeklyCapacity() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
@@ -605,39 +613,84 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
                 
                 val weeklyData = WorkloadHelper.calculateMultiWeekCapacity(allOrders, config, weeksAhead = 4)
                 
-                // Show only if we have data
+                // Check if view is still attached before accessing binding
+                if (!isAdded || _binding == null) return@launch
+                
+                // Hide card if no data
                 if (weeklyData.isEmpty()) {
+                    binding.weeklyCapacityCard.visibility = View.GONE
                     return@launch
                 }
                 
                 // Format and display the summary
                 val summaryText = WorkloadHelper.formatWeeklySummary(weeklyData)
                 
-                // Check if view is still attached before accessing binding
-                if (!isAdded || _binding == null) return@launch
-                
-                // For now, show as a Toast (can be converted to a card later)
                 withContext(Dispatchers.Main) {
                     // Double check after context switch
                     if (!isAdded || _binding == null) return@withContext
                     
-                    // You can add a card in the layout to display this
-                    // For now, we'll just log it or show on demand
-                    // This data is ready to be displayed in a new card widget
+                    // ✨ SHOW THE CARD!
+                    binding.weeklyCapacityCard.visibility = View.VISIBLE
+                    binding.weeklyCapacityText.text = summaryText
                     
-                    // Optionally show a summary indicator
-                    val currentWeek = weeklyData.firstOrNull()
-                    currentWeek?.let {
-                        val emoji = WorkloadHelper.getStatusEmoji(it.statusLevel)
-                        val message = "This week: $emoji ${it.utilizationPercentage}% capacity"
-                        // Can add to a dedicated TextView in the layout
+                    // View Details button - show detailed dialog
+                    binding.viewCapacityDetailsButton.setOnClickListener {
+                        showCapacityDetailsDialog(weeklyData)
                     }
                 }
                 
             } catch (e: Exception) {
                 // Silently fail - not critical for app functionality
+                if (isAdded && _binding != null) {
+                    binding.weeklyCapacityCard.visibility = View.GONE
+                }
             }
         }
+    }
+    
+    /**
+     * ✨ NEW: Show detailed capacity dialog
+     */
+    private fun showCapacityDetailsDialog(weeklyData: List<WorkloadHelper.WeeklyCapacity>) {
+        val dateFormat = java.text.SimpleDateFormat("MMM dd", java.util.Locale.getDefault())
+        
+        val detailedText = buildString {
+            append("📅 Detailed Capacity Breakdown\n\n")
+            
+            weeklyData.forEach { week ->
+                val startStr = dateFormat.format(week.weekStartDate.time)
+                val endStr = dateFormat.format(week.weekEndDate.time)
+                val emoji = WorkloadHelper.getStatusEmoji(week.statusLevel)
+                val current = if (week.isCurrentWeek) " (THIS WEEK)" else ""
+                
+                append("Week ${week.weekNumber}$current\n")
+                append("$startStr - $endStr\n")
+                append("$emoji ${week.utilizationPercentage}% Capacity\n")
+                append("${week.orderCount} orders scheduled\n")
+                append("${String.format("%.1f", week.allocatedHours)}h / ${String.format("%.1f", week.totalAvailableHours)}h\n")
+                
+                when (week.statusLevel) {
+                    WorkloadHelper.StatusLevel.AVAILABLE -> append("✨ Great time for new orders!\n")
+                    WorkloadHelper.StatusLevel.BUSY -> append("⚠️ High capacity - limited availability\n")
+                    WorkloadHelper.StatusLevel.OVERBOOKED -> append("🚨 OVERBOOKED - Consider rescheduling\n")
+                }
+                
+                append("\n")
+            }
+            
+            // Recommendation
+            val bestWeek = weeklyData.minByOrNull { it.utilizationPercentage }
+            bestWeek?.let {
+                append("💡 Best time for new orders: Week ${it.weekNumber}\n")
+                append("   Only ${it.utilizationPercentage}% booked!")
+            }
+        }
+        
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("📊 Capacity Details")
+            .setMessage(detailedText)
+            .setPositiveButton("OK", null)
+            .show()
     }
 
     /**

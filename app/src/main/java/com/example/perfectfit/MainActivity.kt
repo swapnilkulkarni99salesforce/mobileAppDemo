@@ -1,7 +1,9 @@
 package com.example.perfectfit
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.perfectfit.databinding.ActivityMainBinding
 import com.example.perfectfit.utils.NotificationHelper
@@ -16,6 +18,10 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        
+        // Set status bar color to match the gradient start
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.md_theme_light_primary)
         
         // Initialize notification channels
         NotificationHelper.createNotificationChannels(this)

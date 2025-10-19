@@ -25,6 +25,13 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
     private lateinit var syncRepository: SyncRepository
     private lateinit var database: AppDatabase
     
+    // Financial data visibility
+    private var isFinancialDataVisible = false
+    private var actualTodayRevenue = 0.0
+    private var actualMonthRevenue = 0.0
+    private var actualPendingAmount = 0.0
+    private var actualPendingCount = 0
+    
     private val motivationalQuotes = listOf(
         "Success is the sum of small efforts repeated day in and day out.",
         "Quality is not an act, it is a habit.",
@@ -126,6 +133,11 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
 
         binding.viewPendingPaymentsButton.setOnClickListener {
             navigateToPendingPayments()
+        }
+        
+        // Financial visibility toggle
+        binding.toggleFinancialVisibility.setOnClickListener {
+            toggleFinancialVisibility()
         }
     }
 
@@ -393,11 +405,14 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
                 }
                 val totalOutstanding = outstandingOrders.sumOf { it.outstandingAmount }
 
-                // Update UI
-                binding.todayRevenue.text = "₹${String.format("%.2f", todayRevenue)}"
-                binding.monthRevenue.text = "₹${String.format("%.2f", monthRevenue)}"
-                binding.outstandingAmount.text = "₹${String.format("%.2f", totalOutstanding)}"
-                binding.pendingPaymentCount.text = getString(R.string.orders_count, outstandingOrders.size)
+                // Store actual values
+                actualTodayRevenue = todayRevenue
+                actualMonthRevenue = monthRevenue
+                actualPendingAmount = totalOutstanding
+                actualPendingCount = outstandingOrders.size
+
+                // Update UI with masked values initially
+                updateFinancialUI()
 
                 if (allOrders.isEmpty()) {
                     binding.financialDashboardCard.visibility = View.GONE
@@ -408,6 +423,43 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
             } catch (e: Exception) {
                 binding.financialDashboardCard.visibility = View.GONE
             }
+        }
+    }
+    
+    private fun toggleFinancialVisibility() {
+        isFinancialDataVisible = !isFinancialDataVisible
+        updateFinancialUI()
+        
+        // Update icon
+        val iconRes = if (isFinancialDataVisible) {
+            android.R.drawable.ic_menu_view // Eye open
+        } else {
+            android.R.drawable.ic_secure // Eye closed/lock
+        }
+        binding.toggleFinancialVisibility.setIconResource(iconRes)
+        
+        // Announce change for accessibility
+        val announcement = if (isFinancialDataVisible) {
+            "Financial data visible"
+        } else {
+            "Financial data hidden"
+        }
+        binding.toggleFinancialVisibility.announceForAccessibility(announcement)
+    }
+    
+    private fun updateFinancialUI() {
+        if (isFinancialDataVisible) {
+            // Show actual values
+            binding.todayRevenue.text = "₹${String.format("%.2f", actualTodayRevenue)}"
+            binding.monthRevenue.text = "₹${String.format("%.2f", actualMonthRevenue)}"
+            binding.outstandingAmount.text = "₹${String.format("%.2f", actualPendingAmount)}"
+            binding.pendingPaymentCount.text = getString(R.string.orders_count, actualPendingCount)
+        } else {
+            // Show masked values
+            binding.todayRevenue.text = "₹••••"
+            binding.monthRevenue.text = "₹••••"
+            binding.outstandingAmount.text = "₹••••"
+            binding.pendingPaymentCount.text = "•• orders"
         }
     }
 

@@ -67,6 +67,7 @@
     <string name="cd_phone_icon">Phone number</string>
     <string name="cd_calendar_icon">Date</string>
     <string name="cd_fab_new">Create new order or customer</string>
+    <string name="cd_toggle_financial_visibility">Toggle financial data visibility</string>
     
     <!-- Announcements -->
     <string name="announce_workload">Workload status: %1$s</string>

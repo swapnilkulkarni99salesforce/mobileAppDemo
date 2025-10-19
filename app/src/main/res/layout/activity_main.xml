@@ -11,6 +11,8 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/gradient_toolbar_modern"
+        android:elevation="4dp"
         android:fitsSystemWindows="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,10 +22,11 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
             android:elevation="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
-            app:titleTextColor="?attr/colorOnSurface">
+            app:titleTextColor="@color/white">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -38,23 +41,26 @@
                     android:layout_height="wrap_content"
                     android:letterSpacing="0.01"
                     android:text="Perfect Fit"
-                    android:textColor="?attr/colorOnSurface" />
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
 
                 <View
                     android:layout_width="3dp"
                     android:layout_height="3dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
-                    android:background="?attr/colorPrimary"
+                    android:alpha="0.8"
+                    android:background="@color/white"
                     android:rotation="45" />
 
                 <TextView
                     style="@style/TextAppearance.Material3.LabelLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:letterSpacing="0.05"
-                    android:text="Tailoring"
-                    android:textColor="?attr/colorPrimary" />
+                    android:alpha="0.9"
+                    android:letterSpacing="0.08"
+                    android:text="TAILORING"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
         </com.google.android.material.appbar.MaterialToolbar>

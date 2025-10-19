@@ -26,7 +26,7 @@ class BlouseMeasurementsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        recyclerView = view.findViewById(R.id.blouse_measurements_recycler)
+        recyclerView = view.findViewById(R.id.measurements_recycler)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.setHasFixedSize(false)
         recyclerView.isNestedScrollingEnabled = false

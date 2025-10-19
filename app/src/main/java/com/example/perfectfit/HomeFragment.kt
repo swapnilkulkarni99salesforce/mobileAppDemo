@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -23,6 +24,19 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
     private val binding get() = _binding!!
     private lateinit var syncRepository: SyncRepository
     private lateinit var database: AppDatabase
+    
+    private val motivationalQuotes = listOf(
+        "Success is the sum of small efforts repeated day in and day out.",
+        "Quality is not an act, it is a habit.",
+        "Excellence is not a skill, it's an attitude.",
+        "Great things are done by a series of small things brought together.",
+        "Perfection is not attainable, but if we chase perfection we can catch excellence.",
+        "The difference between ordinary and extraordinary is that little extra.",
+        "Every order you complete is a masterpiece in the making.",
+        "Your dedication to quality makes every customer smile.",
+        "Craftsmanship is the foundation of success.",
+        "Take pride in your work, one stitch at a time."
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,

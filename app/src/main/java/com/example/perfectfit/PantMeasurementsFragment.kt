@@ -26,7 +26,7 @@ class PantMeasurementsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
-        recyclerView = view.findViewById(R.id.pant_measurements_recycler)
+        recyclerView = view.findViewById(R.id.measurements_recycler)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         
         observeMeasurements()

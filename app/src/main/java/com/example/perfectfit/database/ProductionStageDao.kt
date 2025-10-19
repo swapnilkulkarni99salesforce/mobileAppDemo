@@ -9,6 +9,15 @@ import androidx.room.Update
 import com.example.perfectfit.models.ProductionStage
 
 /**
+ * Data class for stage distribution results.
+ * Represents the count of orders in each production stage.
+ */
+data class StageCount(
+    val currentStage: String,
+    val count: Int
+)
+
+/**
  * Data Access Object (DAO) for ProductionStage entity operations.
  * 
  * This interface provides methods for managing production stages of orders.
@@ -100,10 +109,12 @@ interface ProductionStageDao {
     
     /**
      * Counts orders in each production stage.
-     * Returns a map of stage name to count.
+     * Returns a list of stage names with their order counts.
+     * 
+     * @return List of StageCount objects with stage name and count
      */
     @Query("SELECT currentStage, COUNT(*) as count FROM production_stages GROUP BY currentStage")
-    suspend fun getStageDistribution(): Map<String, Int>
+    suspend fun getStageDistribution(): List<StageCount>
     
     /**
      * Deletes the production stage for an order.

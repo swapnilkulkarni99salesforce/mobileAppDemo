@@ -14,7 +14,10 @@ import androidx.lifecycle.lifecycleScope
 import com.example.perfectfit.database.AppDatabase
 import com.example.perfectfit.databinding.FragmentOrderDetailBinding
 import com.example.perfectfit.models.Order
+import com.example.perfectfit.models.ProductionStage
+import com.example.perfectfit.models.OrderStageHistory
 import com.example.perfectfit.utils.WhatsAppHelper
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +33,7 @@ class OrderDetailFragment : Fragment() {
     private var order: Order? = null
     private lateinit var database: AppDatabase
     private var customerPhone: String = ""
+    private var currentStage: ProductionStage? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +58,7 @@ class OrderDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupStatusDropdown()
         setupListeners()
+        setupProductionTracking()
     }
 
     private fun loadOrder(orderId: Int) {
@@ -67,6 +72,7 @@ class OrderDetailFragment : Fragment() {
                     loadedOrder?.let {
                         order = it
                         displayOrderDetails(it)
+                        loadProductionStage(it.id)
                     }
                 }
             } catch (e: Exception) {
@@ -178,6 +184,252 @@ class OrderDetailFragment : Fragment() {
         
         binding.whatsappCustomMessageButton.setOnClickListener {
             showCustomMessageDialog()
+        }
+        
+        // Production tracking listeners
+        binding.productionNextStageButton.setOnClickListener {
+            showStageTransitionDialog()
+        }
+        
+        binding.productionViewHistoryButton.setOnClickListener {
+            showProductionHistory()
+        }
+    }
+    
+    // ===== Production Tracking Methods =====
+    
+    private fun setupProductionTracking() {
+        // Initial setup - actual data loaded in loadProductionStage()
+    }
+    
+    private fun loadProductionStage(orderId: Int) {
+        lifecycleScope.launch {
+            try {
+                val stage = withContext(Dispatchers.IO) {
+                    database.productionStageDao().getStageByOrderId(orderId)
+                }
+                
+                if (stage == null) {
+                    // Create initial production stage
+                    withContext(Dispatchers.IO) {
+                        val newStage = ProductionStage(
+                            orderId = orderId,
+                            currentStage = ProductionStage.STAGE_PENDING
+                        )
+                        database.productionStageDao().insert(newStage)
+                        
+                        // Create initial history entry
+                        val history = OrderStageHistory.startStage(
+                            orderId = orderId,
+                            stageName = ProductionStage.STAGE_PENDING
+                        )
+                        database.orderStageHistoryDao().insert(history)
+                    }
+                    loadProductionStage(orderId) // Reload
+                } else {
+                    withContext(Dispatchers.Main) {
+                        currentStage = stage
+                        displayProductionStage(stage)
+                        loadStageTimeline(orderId)
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Error loading production stage: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+    
+    private fun displayProductionStage(stage: ProductionStage) {
+        binding.productionCurrentStage.text = stage.getStageDisplayName()
+        binding.productionProgressBar.progress = stage.getProgressPercentage()
+        binding.productionProgressPercentage.text = "${stage.getProgressPercentage()}%"
+        
+        val timeInStage = stage.getTimeInCurrentStage()
+        binding.productionTimeInStage.text = when {
+            timeInStage < 1 -> "In stage for: ${(timeInStage * 60).toInt()} minutes"
+            else -> "In stage for: ${timeInStage.toInt()} hours"
+        }
+        
+        // Check if delayed
+        val expected = ProductionStage.getExpectedDuration(stage.currentStage)
+        if (expected > 0 && stage.isStageDelayed(expected)) {
+            binding.productionTimeInStage.setTextColor(
+                ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark)
+            )
+            binding.productionTimeInStage.text = "${binding.productionTimeInStage.text} ⚠️ DELAYED"
+        } else {
+            binding.productionTimeInStage.setTextColor(
+                ContextCompat.getColor(requireContext(), android.R.color.white)
+            )
+        }
+        
+        // Show assigned worker if available
+        if (stage.assignedTo.isNotEmpty()) {
+            binding.productionAssignedWorker.visibility = View.VISIBLE
+            binding.productionAssignedWorker.text = "Assigned to: ${stage.assignedTo}"
+        }
+        
+        // Disable next stage button if already delivered
+        if (stage.currentStage == ProductionStage.STAGE_DELIVERED) {
+            binding.productionNextStageButton.isEnabled = false
+            binding.productionNextStageButton.text = "✅ Delivered"
+        }
+    }
+    
+    private fun loadStageTimeline(orderId: Int) {
+        lifecycleScope.launch {
+            try {
+                val history = withContext(Dispatchers.IO) {
+                    database.orderStageHistoryDao().getHistoryByOrderId(orderId)
+                }
+                
+                withContext(Dispatchers.Main) {
+                    displayTimeline(history)
+                }
+            } catch (e: Exception) {
+                // Handle silently
+            }
+        }
+    }
+    
+    private fun displayTimeline(history: List<OrderStageHistory>) {
+        binding.productionTimelineContainer.removeAllViews()
+        
+        if (history.isEmpty()) {
+            val textView = TextView(requireContext()).apply {
+                text = "No timeline data yet"
+                textSize = 14f
+                setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+            }
+            binding.productionTimelineContainer.addView(textView)
+            return
+        }
+        
+        history.forEach { stage ->
+            val timelineItem = LayoutInflater.from(requireContext())
+                .inflate(android.R.layout.simple_list_item_2, binding.productionTimelineContainer, false)
+            
+            val title = timelineItem.findViewById<TextView>(android.R.id.text1)
+            val subtitle = timelineItem.findViewById<TextView>(android.R.id.text2)
+            
+            val duration = stage.getDurationHours()
+            val durationText = if (duration != null) {
+                String.format("%.1f hours", duration)
+            } else {
+                "In progress"
+            }
+            
+            title.text = "${ProductionStage().copy(currentStage = stage.stageName).getStageDisplayName()} - $durationText"
+            title.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+            
+            val dateFormat = SimpleDateFormat("dd/MM HH:mm", Locale.getDefault())
+            subtitle.text = "Started: ${dateFormat.format(Date(stage.stageStartedAt))}"
+            subtitle.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.darker_gray))
+            
+            if (stage.isDelayed()) {
+                title.text = "${title.text} ⚠️"
+                title.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_red_light))
+            }
+            
+            binding.productionTimelineContainer.addView(timelineItem)
+        }
+    }
+    
+    private fun showStageTransitionDialog() {
+        val stage = currentStage ?: return
+        val currentIndex = ProductionStage.getAllStages().indexOf(stage.currentStage)
+        
+        if (currentIndex == -1 || currentIndex >= ProductionStage.getAllStages().size - 1) {
+            Toast.makeText(requireContext(), "Order is already at final stage", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        val nextStage = ProductionStage.getAllStages()[currentIndex + 1]
+        val nextStageDisplay = ProductionStage().copy(currentStage = nextStage).getStageDisplayName()
+        
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Move to Next Stage")
+            .setMessage("Move order to: $nextStageDisplay?")
+            .setPositiveButton("Move") { _, _ ->
+                moveToNextStage(nextStage)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+    
+    private fun moveToNextStage(newStage: String) {
+        val orderId = order?.id ?: return
+        
+        lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    // Complete current stage in history
+                    val currentHistory = database.orderStageHistoryDao().getActiveStageHistory(orderId)
+                    currentHistory?.let {
+                        database.orderStageHistoryDao().update(it.complete())
+                    }
+                    
+                    // Create new stage history entry
+                    val newHistory = OrderStageHistory.startStage(orderId, newStage)
+                    database.orderStageHistoryDao().insert(newHistory)
+                    
+                    // Update current stage
+                    database.productionStageDao().updateStage(orderId, newStage, System.currentTimeMillis())
+                }
+                
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Stage updated successfully!", Toast.LENGTH_SHORT).show()
+                    loadProductionStage(orderId) // Reload to show updated data
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Error updating stage: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+    
+    private fun showProductionHistory() {
+        val orderId = order?.id ?: return
+        
+        lifecycleScope.launch {
+            try {
+                val history = withContext(Dispatchers.IO) {
+                    database.orderStageHistoryDao().getHistoryByOrderId(orderId)
+                }
+                
+                val totalDuration = withContext(Dispatchers.IO) {
+                    database.orderStageHistoryDao().getTotalOrderDuration(orderId)
+                }
+                
+                withContext(Dispatchers.Main) {
+                    val items = history.map { stage ->
+                        val duration = stage.getDurationHours()
+                        val durationText = if (duration != null) {
+                            String.format("%.1f hrs", duration)
+                        } else {
+                            "In progress"
+                        }
+                        val delayed = if (stage.isDelayed()) " ⚠️ DELAYED" else ""
+                        "${stage.stageName}: $durationText$delayed"
+                    }.toTypedArray()
+                    
+                    val totalHours = totalDuration?.let { it / (1000f * 60f * 60f) } ?: 0f
+                    val message = "Total time: ${String.format("%.1f", totalHours)} hours\n\n${items.joinToString("\n")}"
+                    
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Complete Production History")
+                        .setMessage(message)
+                        .setPositiveButton("Close", null)
+                        .show()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Error loading history: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
     

@@ -87,5 +87,10 @@
     <string name="sheet_create_title">Create New</string>
     <string name="sheet_create_customer">Register Customer</string>
     <string name="sheet_create_order">Create Order</string>
+    
+    <!-- Portfolio -->
+    <string name="cd_portfolio_image">Portfolio image</string>
+    <string name="cd_empty_portfolio">No portfolio images</string>
+    <string name="cd_image_placeholder">Image placeholder</string>
 </resources>
 

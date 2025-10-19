@@ -5,8 +5,14 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.perfectfit.databinding.ActivityMainBinding
 import com.example.perfectfit.utils.NotificationHelper
+import com.example.perfectfit.workers.BirthdayAlertWorker
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 /**
  * Main Activity for the Perfect Fit tailoring application.
@@ -46,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         
         // Initialize system services
         initializeNotificationChannels()
+        scheduleBirthdayAlertWorker()
 
         // Configure navigation
         setupBottomNavigation()
@@ -82,6 +89,47 @@ class MainActivity : AppCompatActivity() {
      */
     private fun initializeNotificationChannels() {
         NotificationHelper.createNotificationChannels(this)
+    }
+    
+    /**
+     * Schedules daily birthday alert worker to check for customer birthdays.
+     * 
+     * The worker runs once per day at 9:00 AM to:
+     * - Check for customers with birthdays today
+     * - Send WhatsApp birthday wishes
+     * - Notify shop owner about birthdays
+     * 
+     * Uses KEEP policy to preserve existing schedule if already set.
+     */
+    private fun scheduleBirthdayAlertWorker() {
+        // Calculate initial delay to run at 9:00 AM
+        val currentTime = Calendar.getInstance()
+        val targetTime = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 9)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+        }
+        
+        // If 9 AM already passed today, schedule for tomorrow
+        if (currentTime.after(targetTime)) {
+            targetTime.add(Calendar.DAY_OF_MONTH, 1)
+        }
+        
+        val initialDelay = targetTime.timeInMillis - currentTime.timeInMillis
+        
+        // Create periodic work request (runs daily)
+        val birthdayWorkRequest = PeriodicWorkRequestBuilder<BirthdayAlertWorker>(
+            1, TimeUnit.DAYS
+        )
+            .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+            .build()
+        
+        // Enqueue the work (KEEP means don't replace if already scheduled)
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            BirthdayAlertWorker.WORK_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            birthdayWorkRequest
+        )
     }
 
     /**

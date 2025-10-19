@@ -76,6 +76,7 @@
     <!-- Legacy Colors (Deprecated - kept for backward compatibility) -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="ic_launcher_background">#006780</color>
     
     <!-- Legacy color aliases mapped to MD3 colors -->
     <color name="background_light">@color/md_theme_light_background</color>

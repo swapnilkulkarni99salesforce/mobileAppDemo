@@ -82,6 +82,10 @@ class WorkloadConfigFragment : Fragment() {
         binding.cancelButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
+        
+        // ✨ QUICK WIN 2: Add extra hours quick action (optional UI element)
+        // This can be added if there's a button in the layout
+        // For now, this functionality is available via QuickActionsHelper
     }
 
     private fun setupTextWatchers() {

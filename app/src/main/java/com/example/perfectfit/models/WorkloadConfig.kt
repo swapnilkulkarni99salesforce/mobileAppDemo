@@ -14,7 +14,12 @@ data class WorkloadConfig(
     val thursdayHours: Float = 8.0f,
     val fridayHours: Float = 8.0f,
     val saturdayHours: Float = 4.0f,
-    val sundayHours: Float = 0.0f
+    val sundayHours: Float = 0.0f,
+    
+    // ✨ NEW: Realistic estimation settings
+    val bufferDays: Int = 2,                // Add buffer days to all estimates
+    val productivityFactor: Float = 0.85f,   // Assume 85% productive time
+    val weekendReduction: Float = 0.8f       // Weekend hours are 80% as productive
 ) {
     // Helper function to get working hours for a specific day
     fun getHoursForDay(dayOfWeek: Int): Float {
@@ -27,6 +32,17 @@ data class WorkloadConfig(
             6 -> fridayHours
             7 -> saturdayHours // Calendar.SATURDAY = 7
             else -> 0.0f
+        }
+    }
+    
+    // ✨ NEW: Get realistic working hours (with weekend reduction)
+    fun getRealisticHoursForDay(dayOfWeek: Int): Float {
+        val baseHours = getHoursForDay(dayOfWeek)
+        // Apply weekend reduction for Saturday and Sunday
+        return if (dayOfWeek == 1 || dayOfWeek == 7) {
+            baseHours * weekendReduction
+        } else {
+            baseHours
         }
     }
     

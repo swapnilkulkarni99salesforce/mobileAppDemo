@@ -178,7 +178,7 @@ object WorkloadHelper {
     }
     
     /**
-     * Calculate estimated delivery date for a new order
+     * Calculate estimated delivery date for a new order (OPTIMISTIC)
      */
     fun calculateDeliveryDate(
         pendingOrdersCount: Int,
@@ -205,6 +205,83 @@ object WorkloadHelper {
         }
         
         return currentDate
+    }
+    
+    /**
+     * ✨ NEW: Calculate REALISTIC delivery date with buffers
+     * Accounts for:
+     * - Productivity factor (people aren't 100% productive)
+     * - Weekend reduction (weekends are less productive)
+     * - Buffer days (contingency for unexpected issues)
+     */
+    fun calculateRealisticDeliveryDate(
+        pendingOrdersCount: Int,
+        config: WorkloadConfig,
+        startDate: Calendar = Calendar.getInstance()
+    ): Calendar {
+        val totalOrdersToComplete = pendingOrdersCount + 1
+        var totalHoursNeeded = totalOrdersToComplete * config.timePerOrderHours
+        
+        // Apply productivity factor (account for breaks, interruptions, etc.)
+        totalHoursNeeded /= config.productivityFactor
+        
+        val currentDate = startDate.clone() as Calendar
+        var hoursRemaining = totalHoursNeeded
+        var daysChecked = 0
+        val maxDaysToCheck = 365
+        
+        while (hoursRemaining > 0 && daysChecked < maxDaysToCheck) {
+            val dayOfWeek = currentDate.get(Calendar.DAY_OF_WEEK)
+            // Use realistic hours (with weekend reduction)
+            val workingHoursToday = config.getRealisticHoursForDay(dayOfWeek)
+            hoursRemaining -= workingHoursToday
+            
+            if (hoursRemaining > 0) {
+                currentDate.add(Calendar.DAY_OF_MONTH, 1)
+            }
+            daysChecked++
+        }
+        
+        // Add buffer days for contingency
+        currentDate.add(Calendar.DAY_OF_MONTH, config.bufferDays)
+        
+        return currentDate
+    }
+    
+    /**
+     * ✨ NEW: Get both optimistic and realistic estimates
+     */
+    data class DeliveryEstimates(
+        val optimisticDate: Calendar,
+        val realisticDate: Calendar,
+        val recommendedDate: Calendar,  // Same as realistic
+        val daysDifference: Int,
+        val confidenceLevel: String
+    )
+    
+    fun calculateDeliveryEstimates(
+        pendingOrdersCount: Int,
+        config: WorkloadConfig
+    ): DeliveryEstimates {
+        val optimistic = calculateDeliveryDate(pendingOrdersCount, config)
+        val realistic = calculateRealisticDeliveryDate(pendingOrdersCount, config)
+        
+        val diffInMillis = realistic.timeInMillis - optimistic.timeInMillis
+        val daysDiff = (diffInMillis / (1000 * 60 * 60 * 24)).toInt()
+        
+        val confidence = when {
+            pendingOrdersCount < 5 -> "High"
+            pendingOrdersCount < 10 -> "Medium"
+            else -> "Low (Consider extending dates)"
+        }
+        
+        return DeliveryEstimates(
+            optimisticDate = optimistic,
+            realisticDate = realistic,
+            recommendedDate = realistic,
+            daysDifference = daysDiff,
+            confidenceLevel = confidence
+        )
     }
     
     /**
@@ -255,6 +332,172 @@ object WorkloadHelper {
             alert.daysUntilDelivery == 0 -> "${getAlertEmoji(alert.alertLevel)} DUE TODAY: ${alert.order.customerName} - Order ${alert.order.orderId}"
             alert.daysUntilDelivery == 1 -> "${getAlertEmoji(alert.alertLevel)} DUE TOMORROW: ${alert.order.customerName} - Order ${alert.order.orderId}"
             else -> "${getAlertEmoji(alert.alertLevel)} Due in ${alert.daysUntilDelivery} days: ${alert.order.customerName} - Order ${alert.order.orderId}"
+        }
+    }
+    
+    /**
+     * ✨ QUICK WIN: Get confidence level based on pending orders
+     */
+    enum class ConfidenceLevel {
+        HIGH,      // < 5 orders
+        MEDIUM,    // 5-10 orders
+        LOW        // > 10 orders
+    }
+    
+    fun getConfidenceLevel(pendingOrders: Int): ConfidenceLevel {
+        return when {
+            pendingOrders < 5 -> ConfidenceLevel.HIGH
+            pendingOrders < 10 -> ConfidenceLevel.MEDIUM
+            else -> ConfidenceLevel.LOW
+        }
+    }
+    
+    /**
+     * ✨ QUICK WIN: Get confidence emoji
+     */
+    fun getConfidenceEmoji(level: ConfidenceLevel): String {
+        return when (level) {
+            ConfidenceLevel.HIGH -> "🟢"
+            ConfidenceLevel.MEDIUM -> "🟡"
+            ConfidenceLevel.LOW -> "🔴"
+        }
+    }
+    
+    /**
+     * ✨ QUICK WIN: Get confidence text
+     */
+    fun getConfidenceText(level: ConfidenceLevel): String {
+        return when (level) {
+            ConfidenceLevel.HIGH -> "High Confidence"
+            ConfidenceLevel.MEDIUM -> "Medium Confidence"
+            ConfidenceLevel.LOW -> "Low Confidence - Consider extending dates"
+        }
+    }
+    
+    /**
+     * ✨ QUICK WIN: Calculate weekly capacity for next N weeks
+     */
+    data class WeeklyCapacity(
+        val weekNumber: Int,
+        val weekStartDate: Calendar,
+        val weekEndDate: Calendar,
+        val totalAvailableHours: Float,
+        val allocatedHours: Float,
+        val utilizationPercentage: Int,
+        val orderCount: Int,
+        val statusLevel: StatusLevel,
+        val isCurrentWeek: Boolean
+    )
+    
+    fun calculateMultiWeekCapacity(
+        allOrders: List<Order>,
+        config: WorkloadConfig,
+        weeksAhead: Int = 4
+    ): List<WeeklyCapacity> {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val weeklyData = mutableListOf<WeeklyCapacity>()
+        val today = Calendar.getInstance()
+        
+        for (weekIndex in 0 until weeksAhead) {
+            val weekStart = Calendar.getInstance().apply {
+                add(Calendar.WEEK_OF_YEAR, weekIndex)
+                set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
+            }
+            
+            val weekEnd = weekStart.clone() as Calendar
+            weekEnd.add(Calendar.DAY_OF_MONTH, 6)
+            
+            // Calculate available hours for this week
+            var availableHours = 0f
+            val tempDate = weekStart.clone() as Calendar
+            
+            while (!tempDate.after(weekEnd)) {
+                val dayOfWeek = tempDate.get(Calendar.DAY_OF_WEEK)
+                availableHours += config.getRealisticHoursForDay(dayOfWeek)
+                tempDate.add(Calendar.DAY_OF_MONTH, 1)
+            }
+            
+            // Find orders with delivery dates in this week
+            val ordersThisWeek = allOrders.filter { order ->
+                try {
+                    val orderDate = dateFormat.parse(order.estimatedDeliveryDate)
+                    orderDate?.let {
+                        val orderCal = Calendar.getInstance().apply { time = it }
+                        !orderCal.before(weekStart) && !orderCal.after(weekEnd)
+                    } ?: false
+                } catch (e: Exception) {
+                    false
+                }
+            }.filter { order ->
+                order.status.equals("Pending", ignoreCase = true) ||
+                order.status.equals("In Progress", ignoreCase = true)
+            }
+            
+            val allocatedHours = ordersThisWeek.size * config.timePerOrderHours
+            val utilization = if (availableHours > 0) {
+                ((allocatedHours / availableHours) * 100).toInt().coerceIn(0, 100)
+            } else {
+                0
+            }
+            
+            val statusLevel = when {
+                utilization < 70 -> StatusLevel.AVAILABLE
+                utilization < 90 -> StatusLevel.BUSY
+                else -> StatusLevel.OVERBOOKED
+            }
+            
+            val isCurrentWeek = weekIndex == 0
+            
+            weeklyData.add(WeeklyCapacity(
+                weekNumber = weekIndex + 1,
+                weekStartDate = weekStart,
+                weekEndDate = weekEnd,
+                totalAvailableHours = availableHours,
+                allocatedHours = allocatedHours,
+                utilizationPercentage = utilization,
+                orderCount = ordersThisWeek.size,
+                statusLevel = statusLevel,
+                isCurrentWeek = isCurrentWeek
+            ))
+        }
+        
+        return weeklyData
+    }
+    
+    /**
+     * ✨ QUICK WIN: Format weekly capacity summary
+     */
+    fun formatWeeklySummary(weeklyCapacity: List<WeeklyCapacity>): String {
+        val dateFormat = SimpleDateFormat("MMM dd", Locale.getDefault())
+        
+        return buildString {
+            append("📅 4-Week Capacity Outlook\n\n")
+            
+            weeklyCapacity.forEachIndexed { index, week ->
+                val startStr = dateFormat.format(week.weekStartDate.time)
+                val endStr = dateFormat.format(week.weekEndDate.time)
+                val emoji = getStatusEmoji(week.statusLevel)
+                val current = if (week.isCurrentWeek) " (THIS WEEK)" else ""
+                
+                append("Week ${week.weekNumber}$current ($startStr-$endStr)\n")
+                append("$emoji ${week.utilizationPercentage}% | ")
+                append("${week.orderCount} orders | ")
+                append("${String.format("%.1f", week.allocatedHours)}h / ${String.format("%.1f", week.totalAvailableHours)}h")
+                
+                when (week.statusLevel) {
+                    StatusLevel.AVAILABLE -> append(" ✨ Good availability")
+                    StatusLevel.BUSY -> append(" ⚠️ High capacity")
+                    StatusLevel.OVERBOOKED -> append(" 🚨 OVERBOOKED")
+                }
+                
+                if (index < weeklyCapacity.size - 1) append("\n\n")
+            }
+            
+            // Add recommendation
+            val bestWeek = weeklyCapacity.minByOrNull { it.utilizationPercentage }
+            bestWeek?.let {
+                append("\n\n💡 Best time for new orders: Week ${it.weekNumber}")
+            }
         }
     }
 }

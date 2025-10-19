@@ -185,11 +185,44 @@ class CreateOrderFragment : Fragment() {
                     }
                 }
                 
-                val estimatedDate = calculateDeliveryDate(pendingOrders.size, config)
-                selectedDeliveryDate = estimatedDate
+                // ✨ IMPROVED: Use realistic estimates instead of optimistic
+                val estimates = WorkloadHelper.calculateDeliveryEstimates(pendingOrders.size, config)
+                selectedDeliveryDate = estimates.realisticDate
+                
+                // ✨ QUICK WIN 1: Get confidence level
+                val confidenceLevel = WorkloadHelper.getConfidenceLevel(pendingOrders.size)
+                val confidenceEmoji = WorkloadHelper.getConfidenceEmoji(confidenceLevel)
+                val confidenceText = WorkloadHelper.getConfidenceText(confidenceLevel)
                 
                 withContext(Dispatchers.Main) {
                     updateDeliveryDate()
+                    
+                    // Show comparison with visual confidence indicator
+                    val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                    val optimisticStr = dateFormat.format(estimates.optimisticDate.time)
+                    val realisticStr = dateFormat.format(estimates.realisticDate.time)
+                    
+                    val comparisonMessage = if (estimates.daysDifference > 0) {
+                        """
+                        📅 Delivery Date Set
+                        
+                        Using REALISTIC estimate: $realisticStr ✅
+                        (Optimistic would be: $optimisticStr)
+                        
+                        Buffer: +${estimates.daysDifference} days
+                        $confidenceEmoji Confidence: $confidenceText
+                        
+                        💡 Realistic dates lead to happier customers!
+                        """.trimIndent()
+                    } else {
+                        "📅 Delivery date: $realisticStr\n$confidenceEmoji Confidence: $confidenceText"
+                    }
+                    
+                    Toast.makeText(
+                        requireContext(),
+                        comparisonMessage,
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             } catch (e: Exception) {
                 // If calculation fails, don't populate the date

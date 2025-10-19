@@ -48,12 +48,12 @@ object WhatsAppHelper {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.data = Uri.parse(url)
             
-            // Check if there's an app to handle this intent
-            if (intent.resolveActivity(context.packageManager) != null) {
+            // Try to open WhatsApp
+            try {
                 context.startActivity(intent)
-            } else {
-                // WhatsApp not installed, show fallback options
-                Toast.makeText(context, "WhatsApp is not installed. Opening alternatives...", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                // If WhatsApp is not available, show share options
+                Toast.makeText(context, "WhatsApp not available. Opening alternatives...", Toast.LENGTH_SHORT).show()
                 showShareOptions(context, phoneNumber, message)
             }
             

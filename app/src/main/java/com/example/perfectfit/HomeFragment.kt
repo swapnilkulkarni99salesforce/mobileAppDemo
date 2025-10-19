@@ -18,6 +18,14 @@ import com.example.perfectfit.utils.WorkloadHelper
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
+import android.util.TypedValue
+import com.google.android.material.color.MaterialColors
+import com.google.android.material.textview.MaterialTextView
+
 class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
 
     private var _binding: FragmentHomeBinding? = null
@@ -134,6 +142,10 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
         binding.viewPendingPaymentsButton.setOnClickListener {
             navigateToPendingPayments()
         }
+
+        binding.viewAllOrdersButton.setOnClickListener {
+            navigateToOrders()
+        }
         
         // Financial visibility toggle
         binding.toggleFinancialVisibility.setOnClickListener {
@@ -219,6 +231,15 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
     }
 
     private fun navigateToPendingPayments() {
+        (activity as? MainActivity)?.let {
+            it.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, OrdersFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+
+    private fun navigateToOrders() {
         (activity as? MainActivity)?.let {
             it.supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, OrdersFragment())
@@ -331,23 +352,56 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
 
                 // Add alert items (max 5)
                 alerts.take(5).forEach { alert ->
-                    val alertView = TextView(requireContext()).apply {
-                        text = WorkloadHelper.formatDeliveryAlertMessage(alert)
-                        textSize = 14f
-                        setPadding(0, 12, 0, 12)
+                    // Build styled message with a colored severity label for visibility
+                    val labelText = when (alert.alertLevel) {
+                        WorkloadHelper.AlertLevel.URGENT -> "URGENT"
+                        WorkloadHelper.AlertLevel.WARNING -> "Warning"
+                        WorkloadHelper.AlertLevel.UPCOMING -> "Upcoming"
+                    }
+                    val message = WorkloadHelper.formatDeliveryAlertMessage(alert)
+                    val combined = SpannableString("$labelText • $message")
 
-                        val textColor = when (alert.alertLevel) {
-                            WorkloadHelper.AlertLevel.URGENT -> R.color.status_error
-                            WorkloadHelper.AlertLevel.WARNING -> R.color.status_pending
-                            WorkloadHelper.AlertLevel.UPCOMING -> android.R.color.holo_blue_dark
-                        }
-                        setTextColor(ContextCompat.getColor(requireContext(), textColor))
+                    val labelColorRes = when (alert.alertLevel) {
+                        WorkloadHelper.AlertLevel.URGENT -> R.color.status_error
+                        WorkloadHelper.AlertLevel.WARNING -> R.color.status_pending
+                        WorkloadHelper.AlertLevel.UPCOMING -> android.R.color.holo_blue_dark
+                    }
+                    combined.setSpan(
+                        ForegroundColorSpan(ContextCompat.getColor(requireContext(), labelColorRes)),
+                        0,
+                        labelText.length,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
 
-                        // Make clickable to view order details
+                    // Use high-contrast text color against error container
+                    val onErrorTextColor = MaterialColors.getColor(
+                        binding.deliveryAlertsCard,
+                        com.google.android.material.R.attr.colorOnErrorContainer
+                    )
+
+                    // Padding in dp
+                    val padV = (12 * resources.displayMetrics.density).toInt()
+                    val padH = (16 * resources.displayMetrics.density).toInt()
+
+                    val alertView = MaterialTextView(requireContext()).apply {
+                        text = combined
+                        textSize = 15f
+                        ellipsize = TextUtils.TruncateAt.END
+                        maxLines = 2
+                        setPadding(padH, padV, padH, padV)
+                        setTextColor(onErrorTextColor)
+
+                        // Ripple background for better affordance
+                        val outValue = TypedValue()
+                        requireContext().theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+                        setBackgroundResource(outValue.resourceId)
+
+                        // Click to view order details
                         setOnClickListener {
                             navigateToOrderDetail(alert.order.id)
                         }
                     }
+
                     binding.deliveryAlertsContainer.addView(alertView)
                 }
 

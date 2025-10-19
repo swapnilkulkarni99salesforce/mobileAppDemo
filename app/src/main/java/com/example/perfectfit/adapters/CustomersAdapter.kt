@@ -7,9 +7,12 @@ import com.example.perfectfit.databinding.ItemCustomerBinding
 import com.example.perfectfit.models.Customer
 
 class CustomersAdapter(
-    private val customers: List<Customer>,
+    customers: List<Customer>,
     private val onItemClick: (Customer) -> Unit
 ) : RecyclerView.Adapter<CustomersAdapter.CustomerViewHolder>() {
+
+    private var originalCustomers: List<Customer> = customers
+    private var visibleCustomers: List<Customer> = customers
 
     inner class CustomerViewHolder(private val binding: ItemCustomerBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -42,9 +45,32 @@ class CustomersAdapter(
     }
 
     override fun onBindViewHolder(holder: CustomerViewHolder, position: Int) {
-        holder.bind(customers[position])
+        holder.bind(visibleCustomers[position])
     }
 
-    override fun getItemCount(): Int = customers.size
+    override fun getItemCount(): Int = visibleCustomers.size
+
+    fun updateData(newCustomers: List<Customer>) {
+        originalCustomers = newCustomers
+        visibleCustomers = newCustomers
+        notifyDataSetChanged()
+    }
+
+    fun filter(query: String) {
+        val trimmed = query.trim()
+        if (trimmed.isEmpty()) {
+            visibleCustomers = originalCustomers
+        } else {
+            val qLower = trimmed.lowercase()
+            val qDigits = trimmed.filter { it.isDigit() }
+            visibleCustomers = originalCustomers.filter { customer ->
+                val nameMatch = customer.fullName.lowercase().contains(qLower)
+                val mobileNormalized = customer.mobile.filter { it.isDigit() }
+                val mobileMatch = qDigits.isNotEmpty() && mobileNormalized.contains(qDigits)
+                nameMatch || mobileMatch
+            }
+        }
+        notifyDataSetChanged()
+    }
 }
 

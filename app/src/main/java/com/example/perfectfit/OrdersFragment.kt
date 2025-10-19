@@ -21,6 +21,7 @@ class OrdersFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var database: AppDatabase
     private lateinit var ordersAdapter: OrdersAdapter
+    private var showPendingOnly: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +40,15 @@ class OrdersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+
+        // Wire checkbox for pending-only filter
+        binding.pendingOnlyCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            showPendingOnly = isChecked
+            loadOrders()
+        }
+        // Ensure initial state reflects default
+        binding.pendingOnlyCheckbox.isChecked = true
+
         loadOrders()
     }
 
@@ -65,15 +75,24 @@ class OrdersFragment : Fragment() {
                 val orders = withContext(Dispatchers.IO) {
                     database.orderDao().getAllOrders()
                 }
+
+                val displayOrders = if (showPendingOnly) {
+                    orders.filter {
+                        it.status.equals("Pending", ignoreCase = true) ||
+                        it.status.equals("In Progress", ignoreCase = true)
+                    }
+                } else {
+                    orders
+                }
                 
                 withContext(Dispatchers.Main) {
-                    if (orders.isEmpty()) {
+                    if (displayOrders.isEmpty()) {
                         binding.emptyStateText.visibility = View.VISIBLE
                         binding.ordersRecyclerView.visibility = View.GONE
                     } else {
                         binding.emptyStateText.visibility = View.GONE
                         binding.ordersRecyclerView.visibility = View.VISIBLE
-                        ordersAdapter = OrdersAdapter(orders) { order ->
+                        ordersAdapter = OrdersAdapter(displayOrders) { order ->
                             navigateToOrderDetail(order)
                         }
                         binding.ordersRecyclerView.adapter = ordersAdapter

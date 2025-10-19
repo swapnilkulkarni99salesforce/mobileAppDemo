@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.widget.addTextChangedListener
 import com.example.perfectfit.adapters.CustomersAdapter
 import com.example.perfectfit.database.AppDatabase
 import com.example.perfectfit.databinding.FragmentCustomersBinding
@@ -17,6 +18,8 @@ class CustomersFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var database: AppDatabase
     private lateinit var adapter: CustomersAdapter
+    private var allCustomers: List<Customer> = emptyList()
+    private var lastQuery: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,6 +35,7 @@ class CustomersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeCustomers()
+        setupSearch()
     }
 
     private fun setupRecyclerView() {
@@ -46,10 +50,17 @@ class CustomersFragment : Fragment() {
 
     private fun observeCustomers() {
         database.customerDao().getAllCustomers().observe(viewLifecycleOwner) { customers ->
-            adapter = CustomersAdapter(customers) { customer ->
-                navigateToCustomerDetail(customer)
-            }
-            binding.customersRecyclerView.adapter = adapter
+            allCustomers = customers
+            adapter.updateData(customers)
+            // Re-apply current query so filtered state persists after data updates
+            adapter.filter(lastQuery)
+        }
+    }
+
+    private fun setupSearch() {
+        binding.searchInput.addTextChangedListener { editable ->
+            lastQuery = editable?.toString() ?: ""
+            adapter.filter(lastQuery)
         }
     }
 

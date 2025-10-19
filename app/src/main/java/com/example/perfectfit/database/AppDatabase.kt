@@ -39,6 +39,7 @@ import com.example.perfectfit.models.WorkloadConfig
  * Version History:
  * - Version 9: Base version with customers, orders, measurements, workload
  * - Version 10: Added production tracking, images, CLV, birthday alerts
+ * - Version 11: Enhanced WorkloadConfig with realistic buffer settings
  * 
  * Note: exportSchema = false means Room won't export database schema to a folder.
  * In production apps, consider setting this to true and tracking schema changes.
@@ -58,7 +59,7 @@ import com.example.perfectfit.models.WorkloadConfig
         ProductionStage::class,
         OrderStageHistory::class
     ],
-    version = 10,
+    version = 11,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

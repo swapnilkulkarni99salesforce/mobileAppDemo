@@ -421,13 +421,16 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
      * Announces status changes for accessibility.
      */
     private fun loadWorkloadStatus() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val config = database.workloadConfigDao().getConfig() ?: WorkloadConfig()
                 val pendingOrders = database.orderDao().getAllOrders().filter {
                     it.status.equals("Pending", ignoreCase = true) ||
                             it.status.equals("In Progress", ignoreCase = true)
                 }
+
+                // Check if view is still attached before accessing binding
+                if (!isAdded || _binding == null) return@launch
 
                 if (pendingOrders.isEmpty()) {
                     binding.workloadStatusCard.visibility = View.GONE
@@ -458,7 +461,10 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
                 )
 
             } catch (e: Exception) {
-                binding.workloadStatusCard.visibility = View.GONE
+                // Check if view is still attached before accessing binding
+                if (isAdded && _binding != null) {
+                    binding.workloadStatusCard.visibility = View.GONE
+                }
             }
         }
     }
@@ -481,7 +487,7 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
      * Card is hidden if no alerts exist.
      */
     private fun loadDeliveryAlerts() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val pendingOrders = database.orderDao().getAllOrders().filter {
                     it.status.equals("Pending", ignoreCase = true) ||
@@ -489,6 +495,9 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
                 }
 
                 val alerts = WorkloadHelper.getDeliveryAlerts(pendingOrders)
+
+                // Check if view is still attached before accessing binding
+                if (!isAdded || _binding == null) return@launch
 
                 if (alerts.isEmpty()) {
                     binding.deliveryAlertsCard.visibility = View.GONE
@@ -503,6 +512,9 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
 
                 // Add alert items (max 5)
                 alerts.take(5).forEach { alert ->
+                    // Check again before each UI operation
+                    if (!isAdded || _binding == null) return@launch
+                    
                     // Build styled message with a colored severity label for visibility
                     val labelText = when (alert.alertLevel) {
                         WorkloadHelper.AlertLevel.URGENT -> "URGENT"
@@ -557,7 +569,10 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
                 }
 
             } catch (e: Exception) {
-                binding.deliveryAlertsCard.visibility = View.GONE
+                // Check if view is still attached before accessing binding
+                if (isAdded && _binding != null) {
+                    binding.deliveryAlertsCard.visibility = View.GONE
+                }
             }
         }
     }
@@ -583,7 +598,7 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
      * Helps with forward planning and identifying capacity bottlenecks
      */
     private fun loadWeeklyCapacity() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             try {
                 val config = database.workloadConfigDao().getConfig() ?: WorkloadConfig()
                 val allOrders = database.orderDao().getAllOrders()
@@ -598,8 +613,14 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
                 // Format and display the summary
                 val summaryText = WorkloadHelper.formatWeeklySummary(weeklyData)
                 
+                // Check if view is still attached before accessing binding
+                if (!isAdded || _binding == null) return@launch
+                
                 // For now, show as a Toast (can be converted to a card later)
                 withContext(Dispatchers.Main) {
+                    // Double check after context switch
+                    if (!isAdded || _binding == null) return@withContext
+                    
                     // You can add a card in the layout to display this
                     // For now, we'll just log it or show on demand
                     // This data is ready to be displayed in a new card widget

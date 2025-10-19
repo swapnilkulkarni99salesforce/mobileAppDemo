@@ -77,6 +77,28 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
+    <!-- Legacy color aliases mapped to MD3 colors -->
+    <color name="background_light">@color/md_theme_light_background</color>
+    <color name="surface_light">@color/md_theme_light_surface</color>
+    <color name="card_light">@color/md_theme_light_surface</color>
+    <color name="on_surface_light">@color/md_theme_light_onSurface</color>
+    <color name="on_surface_variant_light">@color/md_theme_light_onSurfaceVariant</color>
+    
+    <color name="primary_gradient_start">@color/md_theme_light_primary</color>
+    <color name="primary_gradient_end">@color/md_theme_light_primary</color>
+    <color name="rose_gold">@color/md_theme_light_primary</color>
+    <color name="rose_gold_dark">@color/md_theme_light_primary</color>
+    <color name="rose_gold_light">@color/md_theme_light_primaryContainer</color>
+    
+    <color name="sage_green">@color/md_theme_light_secondary</color>
+    <color name="sage_green_light">@color/md_theme_light_secondaryContainer</color>
+    
+    <color name="text_primary">@color/md_theme_light_onSurface</color>
+    <color name="text_secondary">@color/md_theme_light_onSurfaceVariant</color>
+    <color name="text_hint">@color/md_theme_light_outline</color>
+    
+    <color name="accent_teal">@color/md_theme_light_tertiary</color>
+    
     <!-- Semantic Status Colors -->
     <color name="status_pending">#F59E0B</color>
     <color name="status_in_progress">#3B82F6</color>

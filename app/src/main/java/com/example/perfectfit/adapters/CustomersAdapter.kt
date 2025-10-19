@@ -19,6 +19,13 @@ class CustomersAdapter(
             binding.customerEmail.text = customer.address
             binding.customerPhone.text = customer.mobile
             
+            // Set content description for avatar
+            binding.customerAvatar.contentDescription = 
+                binding.root.context.getString(
+                    com.example.perfectfit.R.string.cd_customer_avatar,
+                    customer.fullName
+                )
+            
             binding.root.setOnClickListener {
                 onItemClick(customer)
             }

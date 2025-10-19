@@ -1,8 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App Name -->
     <string name="app_name">Perfect Fit</string>
+    
+    <!-- Navigation -->
     <string name="home">Home</string>
     <string name="customers">Customers</string>
     <string name="orders">Orders</string>
+    
+    <!-- Greetings -->
+    <string name="greeting_night">Good Night</string>
+    <string name="greeting_morning">Good Morning</string>
+    <string name="greeting_afternoon">Good Afternoon</string>
+    <string name="greeting_evening">Good Evening</string>
+    
+    <string name="subtitle_night">Time to rest and recharge for tomorrow!</string>
+    <string name="subtitle_morning">Let\'s start the day with productivity!</string>
+    <string name="subtitle_afternoon">Keep up the great work!</string>
+    <string name="subtitle_evening">Finishing strong today!</string>
+    
+    <!-- Home Screen Sections -->
+    <string name="section_overview">Overview</string>
+    <string name="section_workload">Workload Status</string>
+    <string name="section_delivery_alerts">Delivery Alerts</string>
+    <string name="section_financial">Financial Summary</string>
+    <string name="section_quick_actions">Quick Actions</string>
+    
+    <!-- Dashboard Stats -->
+    <string name="stat_customers">Total Customers</string>
+    <string name="stat_orders">Total Orders</string>
+    <string name="stat_pending">Pending</string>
+    <string name="stat_completed">Completed</string>
+    
+    <!-- Financial -->
+    <string name="revenue_today">Today</string>
+    <string name="revenue_month">This Month</string>
+    <string name="pending_payments">Pending Payments</string>
+    <string name="orders_count">%1$d orders</string>
+    
+    <!-- Workload -->
+    <string name="workload_title">Current Workload</string>
+    <string name="workload_hours">%1$.1f hours</string>
+    <string name="workload_capacity">+%1$d more orders</string>
+    <string name="workload_full">At capacity</string>
+    
+    <!-- Actions -->
+    <string name="action_new_order">New Order</string>
+    <string name="action_new_customer">New Customer</string>
+    <string name="action_sync">Sync Now</string>
+    <string name="action_workload_config">Workload Settings</string>
+    <string name="action_view_all">View All</string>
+    
+    <!-- Sync -->
+    <string name="sync_last">Last sync: %1$s</string>
+    <string name="sync_never">Never synced</string>
+    <string name="sync_in_progress">Syncing…</string>
+    <string name="sync_success">Sync completed successfully</string>
+    <string name="sync_failed">Sync failed. Check your connection.</string>
+    <string name="auto_sync_enabled">Auto-sync enabled</string>
+    <string name="auto_sync_disabled">Auto-sync disabled</string>
+    
+    <!-- Accessibility -->
+    <string name="cd_customer_avatar">Profile picture for %1$s</string>
+    <string name="cd_order_icon">Order icon</string>
+    <string name="cd_location_icon">Location</string>
+    <string name="cd_phone_icon">Phone number</string>
+    <string name="cd_calendar_icon">Date</string>
+    <string name="cd_fab_new">Create new order or customer</string>
+    
+    <!-- Announcements -->
+    <string name="announce_workload">Workload status: %1$s</string>
+    <string name="announce_data_loaded">Dashboard data loaded</string>
+    <string name="announce_sync_complete">Synchronization complete</string>
+    
+    <!-- Empty States -->
+    <string name="empty_customers">No customers yet</string>
+    <string name="empty_orders">No orders yet</string>
+    <string name="empty_pending">No pending orders</string>
+    
+    <!-- Errors -->
+    <string name="error_loading">Unable to load data</string>
+    <string name="error_retry">Tap to retry</string>
+    
+    <!-- Bottom Sheet -->
+    <string name="sheet_create_title">Create New</string>
+    <string name="sheet_create_customer">Register Customer</string>
+    <string name="sheet_create_order">Create Order</string>
 </resources>
 

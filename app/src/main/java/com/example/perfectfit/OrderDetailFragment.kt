@@ -742,7 +742,7 @@ class OrderDetailFragment : Fragment() {
             try {
                 // Save image to internal storage
                 val filePath = withContext(Dispatchers.IO) {
-                    imageHelper.saveImageFromUri(uri, "order_${orderId}_${System.currentTimeMillis()}.jpg")
+                    imageHelper.saveImage(uri, orderId, imageType)
                 }
                 
                 if (filePath != null) {

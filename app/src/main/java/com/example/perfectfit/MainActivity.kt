@@ -151,6 +151,14 @@ class MainActivity : AppCompatActivity() {
                     loadFragment(OrdersFragment())
                     true
                 }
+                R.id.navigation_analytics -> {
+                    loadFragment(AnalyticsFragment())
+                    true
+                }
+                R.id.navigation_portfolio -> {
+                    loadFragment(PortfolioFragment())
+                    true
+                }
                 else -> false
             }
         }

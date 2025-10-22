@@ -12,5 +12,13 @@
         android:id="@+id/navigation_orders"
         android:icon="@drawable/ic_orders"
         android:title="Orders" />
+    <item
+        android:id="@+id/navigation_analytics"
+        android:icon="@drawable/ic_analytics"
+        android:title="Analytics" />
+    <item
+        android:id="@+id/navigation_portfolio"
+        android:icon="@drawable/ic_portfolio"
+        android:title="Portfolio" />
 </menu>
 

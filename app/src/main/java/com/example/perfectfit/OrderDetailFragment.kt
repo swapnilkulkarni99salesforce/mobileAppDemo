@@ -1,22 +1,32 @@
 package com.example.perfectfit
 
 import android.app.AlertDialog
+import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.perfectfit.adapters.OrderImagesAdapter
 import com.example.perfectfit.database.AppDatabase
 import com.example.perfectfit.databinding.FragmentOrderDetailBinding
 import com.example.perfectfit.models.Order
+import com.example.perfectfit.models.OrderImage
 import com.example.perfectfit.models.ProductionStage
 import com.example.perfectfit.models.OrderStageHistory
+import com.example.perfectfit.utils.ImageHelper
 import com.example.perfectfit.utils.WhatsAppHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
@@ -35,10 +45,27 @@ class OrderDetailFragment : Fragment() {
     private lateinit var database: AppDatabase
     private var customerPhone: String = ""
     private var currentStage: ProductionStage? = null
+    
+    // Image handling
+    private lateinit var imageHelper: ImageHelper
+    private lateinit var imagesAdapter: OrderImagesAdapter
+    private var pendingImageType: String? = null
+    
+    // Image picker launcher
+    private val imagePickerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                handleImageSelected(uri)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         database = AppDatabase.getDatabase(requireContext())
+        imageHelper = ImageHelper(requireContext())
         
         arguments?.let {
             val orderId = it.getInt("orderId")
@@ -60,6 +87,7 @@ class OrderDetailFragment : Fragment() {
         setupStatusDropdown()
         setupListeners()
         setupProductionTracking()
+        setupOrderImages()
     }
 
     private fun loadOrder(orderId: Int) {
@@ -194,6 +222,15 @@ class OrderDetailFragment : Fragment() {
         
         binding.productionViewHistoryButton.setOnClickListener {
             showProductionHistory()
+        }
+        
+        // Order images listeners
+        binding.addReferenceImageButton.setOnClickListener {
+            pickImage(OrderImage.TYPE_REFERENCE)
+        }
+        
+        binding.addCompletedImageButton.setOnClickListener {
+            pickImage(OrderImage.TYPE_COMPLETED)
         }
     }
     
@@ -620,6 +657,190 @@ class OrderDetailFragment : Fragment() {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(requireContext(), "Error updating status: ${e.message}", Toast.LENGTH_LONG).show()
                     }
+                }
+            }
+        }
+    }
+    
+    // ===== Order Images Methods =====
+    
+    /**
+     * Sets up the order images RecyclerView and adapter.
+     */
+    private fun setupOrderImages() {
+        // Initialize adapter
+        imagesAdapter = OrderImagesAdapter(
+            imageHelper = imageHelper,
+            onImageClick = { image -> showFullScreenImage(image) },
+            onDeleteClick = { image -> confirmDeleteImage(image) }
+        )
+        
+        // Setup RecyclerView
+        binding.orderImagesRecycler.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = imagesAdapter
+        }
+        
+        // Load images for this order
+        order?.let { loadOrderImages(it.id) }
+    }
+    
+    /**
+     * Loads all images for the order.
+     */
+    private fun loadOrderImages(orderId: Int) {
+        lifecycleScope.launch {
+            try {
+                val images = withContext(Dispatchers.IO) {
+                    database.orderImageDao().getImagesByOrderId(orderId)
+                }
+                
+                withContext(Dispatchers.Main) {
+                    updateImagesUI(images)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Error loading images: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+    
+    /**
+     * Updates the images UI.
+     */
+    private fun updateImagesUI(images: List<OrderImage>) {
+        if (images.isEmpty()) {
+            binding.orderImagesRecycler.isVisible = false
+            binding.noImagesText.isVisible = true
+            binding.imagesCountText.text = "0"
+        } else {
+            binding.orderImagesRecycler.isVisible = true
+            binding.noImagesText.isVisible = false
+            binding.imagesCountText.text = images.size.toString()
+            imagesAdapter.updateImages(images)
+        }
+    }
+    
+    /**
+     * Opens image picker to select an image.
+     */
+    private fun pickImage(imageType: String) {
+        pendingImageType = imageType
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        imagePickerLauncher.launch(intent)
+    }
+    
+    /**
+     * Handles the selected image from picker.
+     */
+    private fun handleImageSelected(uri: android.net.Uri) {
+        val orderId = order?.id ?: return
+        val imageType = pendingImageType ?: return
+        
+        lifecycleScope.launch {
+            try {
+                // Save image to internal storage
+                val filePath = withContext(Dispatchers.IO) {
+                    imageHelper.saveImageFromUri(uri, "order_${orderId}_${System.currentTimeMillis()}.jpg")
+                }
+                
+                if (filePath != null) {
+                    // Save to database
+                    val orderImage = OrderImage(
+                        orderId = orderId,
+                        filePath = filePath,
+                        imageType = imageType,
+                        uploadedAt = System.currentTimeMillis()
+                    )
+                    
+                    withContext(Dispatchers.IO) {
+                        database.orderImageDao().insert(orderImage)
+                    }
+                    
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(requireContext(), "Image added successfully!", Toast.LENGTH_SHORT).show()
+                        loadOrderImages(orderId) // Reload images
+                    }
+                } else {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(requireContext(), "Failed to save image", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        
+        pendingImageType = null
+    }
+    
+    /**
+     * Shows full-screen image viewer.
+     */
+    private fun showFullScreenImage(image: OrderImage) {
+        val dialog = android.app.Dialog(requireContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+        val imageView = ImageView(requireContext()).apply {
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            
+            // Load image
+            val fullPath = imageHelper.getFullPath(image.filePath)
+            val bitmap = BitmapFactory.decodeFile(fullPath)
+            if (bitmap != null) {
+                setImageBitmap(bitmap)
+            }
+            
+            // Close on click
+            setOnClickListener {
+                dialog.dismiss()
+            }
+            
+            contentDescription = "Full screen order image"
+        }
+        
+        dialog.setContentView(imageView)
+        dialog.show()
+    }
+    
+    /**
+     * Shows confirmation dialog before deleting an image.
+     */
+    private fun confirmDeleteImage(image: OrderImage) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete Image?")
+            .setMessage("Are you sure you want to delete this image? This action cannot be undone.")
+            .setPositiveButton("Delete") { _, _ ->
+                deleteImage(image)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+    
+    /**
+     * Deletes an image from database and storage.
+     */
+    private fun deleteImage(image: OrderImage) {
+        val orderId = order?.id ?: return
+        
+        lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    // Delete from database
+                    database.orderImageDao().delete(image)
+                    
+                    // Delete file
+                    imageHelper.deleteImage(image.filePath)
+                }
+                
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Image deleted", Toast.LENGTH_SHORT).show()
+                    loadOrderImages(orderId) // Reload images
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Error deleting image: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }

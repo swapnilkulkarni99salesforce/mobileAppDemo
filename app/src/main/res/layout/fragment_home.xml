@@ -134,6 +134,147 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- QUICK ACCESS SECTION -->
+            <TextView
+                style="@style/TextAppearance.Material3.TitleMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp"
+                android:text="Quick Access"
+                android:textColor="?attr/colorOnSurface" />
+
+            <!-- Quick Access Grid -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <!-- Analytics Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/quick_access_analytics"
+                    style="@style/Widget.PerfectFit.Card.Filled"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="?attr/colorPrimaryContainer"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:contentDescription="Analytics"
+                            android:src="@drawable/ic_analytics"
+                            app:tint="?attr/colorOnPrimaryContainer" />
+
+                        <TextView
+                            style="@style/TextAppearance.Material3.LabelMedium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Analytics"
+                            android:textAlignment="center"
+                            android:textColor="?attr/colorOnPrimaryContainer" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Portfolio Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/quick_access_portfolio"
+                    style="@style/Widget.PerfectFit.Card.Filled"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="?attr/colorSecondaryContainer"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:contentDescription="Portfolio"
+                            android:src="@drawable/ic_portfolio"
+                            app:tint="?attr/colorOnSecondaryContainer" />
+
+                        <TextView
+                            style="@style/TextAppearance.Material3.LabelMedium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Portfolio"
+                            android:textAlignment="center"
+                            android:textColor="?attr/colorOnSecondaryContainer" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Workload Config Card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/quick_access_workload"
+                    style="@style/Widget.PerfectFit.Card.Filled"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="?attr/colorTertiaryContainer"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:contentDescription="Settings"
+                            android:src="@drawable/ic_settings"
+                            app:tint="?attr/colorOnTertiaryContainer" />
+
+                        <TextView
+                            style="@style/TextAppearance.Material3.LabelMedium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Workload"
+                            android:textAlignment="center"
+                            android:textColor="?attr/colorOnTertiaryContainer" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
             <!-- DELIVERY ALERTS CARD (Order Pipeline) -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/delivery_alerts_card"

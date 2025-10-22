@@ -227,6 +227,19 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
             showNewActionBottomSheet()
         }
         
+        // Quick Access Cards
+        binding.quickAccessAnalytics.setOnClickListener {
+            navigateToAnalytics()
+        }
+        
+        binding.quickAccessPortfolio.setOnClickListener {
+            navigateToPortfolio()
+        }
+        
+        binding.quickAccessWorkload.setOnClickListener {
+            navigateToWorkloadConfig()
+        }
+        
         binding.workloadConfigButton.setOnClickListener {
             navigateToWorkloadConfig()
         }
@@ -332,6 +345,22 @@ class HomeFragment : Fragment(), NewActionBottomSheet.NewActionListener {
         val workloadConfigFragment = WorkloadConfigFragment()
         parentFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, workloadConfigFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+    
+    private fun navigateToAnalytics() {
+        val analyticsFragment = AnalyticsFragment()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, analyticsFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+    
+    private fun navigateToPortfolio() {
+        val portfolioFragment = PortfolioFragment()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, portfolioFragment)
             .addToBackStack(null)
             .commit()
     }

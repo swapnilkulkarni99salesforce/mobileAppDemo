@@ -207,6 +207,10 @@ data class Order(
         // Order type constants
         const val TYPE_BLOUSE = "Blouse"
         const val TYPE_KURTI_PANT = "Kurti and Pant"
+        const val TYPE_ANAARKALI = "Anaarkali"
+        const val TYPE_SAREE_DRESS = "Saree Dress"
+        const val TYPE_DESIGNER_BLOUSE = "Designer Blouse"
+        const val TYPE_KIDS_DRESS = "Kids Dress"
     }
 }
 

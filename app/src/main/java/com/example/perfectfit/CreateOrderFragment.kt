@@ -75,7 +75,14 @@ class CreateOrderFragment : Fragment() {
         binding.orderDateInput.setText(dateFormat.format(today.time))
 
         // Setup order type dropdown
-        val orderTypes = arrayOf("Blouse", "Kurti and Pant")
+        val orderTypes = arrayOf(
+            "Blouse", 
+            "Kurti and Pant",
+            "Anaarkali",
+            "Saree Dress",
+            "Designer Blouse",
+            "Kids Dress"
+        )
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, orderTypes)
         binding.orderTypeDropdown.setAdapter(adapter)
     }

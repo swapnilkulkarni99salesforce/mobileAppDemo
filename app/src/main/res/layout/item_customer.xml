@@ -29,7 +29,7 @@
                 android:layout_height="40dp"
                 android:contentDescription="@string/cd_customer_avatar"
                 android:scaleType="centerCrop"
-                android:src="@drawable/customer_avatar_placeholder"
+                android:src="@drawable/young_lady"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
                 tools:ignore="ContentDescription" />
 

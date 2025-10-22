@@ -40,6 +40,14 @@ class ImageHelper(private val context: Context) {
             }
         }
     }
+    
+    private val portfolioDir: File by lazy {
+        File(context.filesDir, PORTFOLIO_DIRECTORY).apply {
+            if (!exists()) {
+                mkdirs()
+            }
+        }
+    }
 
     /**
      * Saves an image from URI to app storage with compression.
@@ -53,10 +61,14 @@ class ImageHelper(private val context: Context) {
         return try {
             val inputStream = context.contentResolver.openInputStream(uri) ?: return null
             
+            // Determine target directory based on image type
+            val isPortfolio = imageType == "COMPLETED"
+            val targetDir = if (isPortfolio) portfolioDir else imagesDir
+            
             // Generate unique filename
             val timestamp = System.currentTimeMillis()
             val fileName = "order_${orderId}_${imageType}_${timestamp}.jpg"
-            val targetFile = File(imagesDir, fileName)
+            val targetFile = File(targetDir, fileName)
             
             // Load and compress image
             val bitmap = loadAndOrientBitmap(inputStream, uri)
@@ -74,8 +86,12 @@ class ImageHelper(private val context: Context) {
             }
             inputStream.close()
             
-            // Return relative path
-            fileName
+            // Return relative path with directory prefix if portfolio
+            if (isPortfolio) {
+                "$PORTFOLIO_DIRECTORY/$fileName"
+            } else {
+                fileName
+            }
             
         } catch (e: Exception) {
             e.printStackTrace()
@@ -173,7 +189,12 @@ class ImageHelper(private val context: Context) {
      */
     fun deleteImage(filePath: String): Boolean {
         return try {
-            val file = File(imagesDir, filePath)
+            // Determine if it's a portfolio image
+            val file = if (filePath.startsWith("$PORTFOLIO_DIRECTORY/")) {
+                File(context.filesDir, filePath)
+            } else {
+                File(imagesDir, filePath)
+            }
             file.delete()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -188,7 +209,11 @@ class ImageHelper(private val context: Context) {
      * @return Full file path
      */
     fun getFullPath(filePath: String): String {
-        return File(imagesDir, filePath).absolutePath
+        return if (filePath.startsWith("$PORTFOLIO_DIRECTORY/")) {
+            File(context.filesDir, filePath).absolutePath
+        } else {
+            File(imagesDir, filePath).absolutePath
+        }
     }
 
     /**
@@ -200,7 +225,12 @@ class ImageHelper(private val context: Context) {
      */
     fun getImageUri(filePath: String): Uri? {
         return try {
-            val file = File(imagesDir, filePath)
+            val file = if (filePath.startsWith("$PORTFOLIO_DIRECTORY/")) {
+                File(context.filesDir, filePath)
+            } else {
+                File(imagesDir, filePath)
+            }
+            
             if (file.exists()) {
                 FileProvider.getUriForFile(
                     context,
@@ -314,6 +344,7 @@ class ImageHelper(private val context: Context) {
 
     companion object {
         private const val IMAGES_DIRECTORY = "images"
+        private const val PORTFOLIO_DIRECTORY = "portfolio"
         private const val MAX_IMAGE_SIZE = 1920  // Max width/height in pixels
         private const val JPEG_QUALITY = 85      // JPEG compression quality (0-100)
     }

@@ -3,6 +3,7 @@ package com.example.perfectfit
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -34,6 +36,7 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -50,15 +53,38 @@ class OrderDetailFragment : Fragment() {
     private lateinit var imageHelper: ImageHelper
     private lateinit var imagesAdapter: OrderImagesAdapter
     private var pendingImageType: String? = null
+    private var tempCameraImageUri: Uri? = null
     
-    // Image picker launcher
-    private val imagePickerLauncher = registerForActivityResult(
+    // Gallery picker launcher
+    private val galleryPickerLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == android.app.Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
                 handleImageSelected(uri)
             }
+        }
+    }
+    
+    // Camera launcher
+    private val cameraLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            tempCameraImageUri?.let { uri ->
+                handleImageSelected(uri)
+            }
+        }
+    }
+    
+    // Camera permission launcher
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            openCamera()
+        } else {
+            Toast.makeText(requireContext(), "Camera permission is required to take photos", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -723,12 +749,74 @@ class OrderDetailFragment : Fragment() {
     }
     
     /**
-     * Opens image picker to select an image.
+     * Shows chooser dialog for Camera or Gallery.
      */
     private fun pickImage(imageType: String) {
         pendingImageType = imageType
+        
+        val options = arrayOf("Take Photo", "Choose from Gallery", "Cancel")
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Add Image")
+            .setItems(options) { dialog, which ->
+                when (which) {
+                    0 -> checkCameraPermissionAndOpen()
+                    1 -> openGallery()
+                    2 -> dialog.dismiss()
+                }
+            }
+            .show()
+    }
+    
+    /**
+     * Checks camera permission and opens camera if granted.
+     */
+    private fun checkCameraPermissionAndOpen() {
+        when {
+            requireContext().checkSelfPermission(android.Manifest.permission.CAMERA) == 
+                android.content.pm.PackageManager.PERMISSION_GRANTED -> {
+                openCamera()
+            }
+            else -> {
+                cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+            }
+        }
+    }
+    
+    /**
+     * Opens the camera to take a photo.
+     */
+    private fun openCamera() {
+        try {
+            // Create temporary file for camera image
+            val orderId = order?.id ?: return
+            val imageType = pendingImageType ?: return
+            val timestamp = System.currentTimeMillis()
+            val fileName = "temp_camera_${orderId}_${imageType}_${timestamp}.jpg"
+            
+            val tempFile = File(requireContext().cacheDir, fileName)
+            tempCameraImageUri = FileProvider.getUriForFile(
+                requireContext(),
+                "${requireContext().packageName}.fileprovider",
+                tempFile
+            )
+            
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+                putExtra(MediaStore.EXTRA_OUTPUT, tempCameraImageUri)
+                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            }
+            
+            cameraLauncher.launch(intent)
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Error opening camera: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    /**
+     * Opens gallery to pick an image.
+     */
+    private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        imagePickerLauncher.launch(intent)
+        galleryPickerLauncher.launch(intent)
     }
     
     /**

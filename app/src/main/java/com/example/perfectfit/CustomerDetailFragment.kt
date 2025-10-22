@@ -1,9 +1,12 @@
 package com.example.perfectfit
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.perfectfit.databinding.FragmentCustomerDetailBinding
 import com.example.perfectfit.models.Customer
@@ -56,13 +59,19 @@ class CustomerDetailFragment : Fragment() {
         binding.customerAge.text = "$age years"
         binding.customerBirthdate.text = customer.birthDate
 
-        // Display mobile
+        // Display mobile with click to call
         binding.customerMobile.text = customer.mobile
+        binding.customerMobile.setOnClickListener {
+            openPhoneDialer(customer.mobile)
+        }
 
         // Display alternate mobile if present
         if (customer.alternateMobile.isNotEmpty()) {
             binding.alternateMobileLayout.visibility = View.VISIBLE
             binding.customerAlternateMobile.text = customer.alternateMobile
+            binding.customerAlternateMobile.setOnClickListener {
+                openPhoneDialer(customer.alternateMobile)
+            }
         } else {
             binding.alternateMobileLayout.visibility = View.GONE
         }
@@ -73,6 +82,25 @@ class CustomerDetailFragment : Fragment() {
             binding.customerAddress.text = customer.address
         } else {
             binding.addressCard.visibility = View.GONE
+        }
+    }
+    
+    /**
+     * Opens the phone dialer with the specified phone number pre-filled.
+     * @param phoneNumber The phone number to dial
+     */
+    private fun openPhoneDialer(phoneNumber: String) {
+        try {
+            val intent = Intent(Intent.ACTION_DIAL).apply {
+                data = Uri.parse("tel:$phoneNumber")
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(
+                requireContext(),
+                "Unable to open phone dialer",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

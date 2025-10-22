@@ -30,9 +30,9 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:contentDescription="@string/cd_customer_avatar"
-                android:src="@drawable/ic_person_avatar"
+                android:scaleType="centerCrop"
+                android:src="@drawable/young_lady"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-                app:tint="?attr/colorOnPrimaryContainer"
                 tools:ignore="ContentDescription" />
 
             <TextView
@@ -201,9 +201,13 @@
                         style="@style/TextAppearance.Material3.BodyLarge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:text="+1 234 567 8900"
                         android:textColor="?attr/colorPrimary"
                         android:textStyle="bold"
+                        android:background="?attr/selectableItemBackground"
+                        android:padding="4dp"
                         tools:text="+91 98765 43210" />
 
                 </LinearLayout>
@@ -230,8 +234,12 @@
                         style="@style/TextAppearance.Material3.BodyLarge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:text="+1 234 567 8901"
-                        android:textColor="?attr/colorOnSurface"
+                        android:textColor="?attr/colorPrimary"
+                        android:background="?attr/selectableItemBackground"
+                        android:padding="4dp"
                         tools:text="+91 98765 43211" />
 
                 </LinearLayout>
